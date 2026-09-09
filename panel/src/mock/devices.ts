@@ -1,0 +1,90 @@
+import { PanelDevice } from '@/types';
+
+export const mockDevices: PanelDevice[] = [
+  {
+    id: 'preview_living_light',
+    name: '客厅主灯',
+    category: 'light',
+    room: '客厅',
+    slot: 1,
+    dps: { switch: 'light_01_switch' },
+  },
+  {
+    id: 'preview_bathroom_light',
+    name: '公卫灯',
+    category: 'light',
+    room: '公卫',
+    slot: 2,
+    dps: { switch: 'light_02_switch' },
+  },
+  {
+    id: 'preview_air_conditioner',
+    name: '客厅空调',
+    category: 'air_conditioner',
+    room: '客厅',
+    slot: 1,
+    dps: {
+      switch: 'ac_01_switch',
+      mode: 'ac_01_mode',
+      fan_speed: 'ac_01_fan_speed',
+      temp_set: 'ac_01_temp_set',
+      temp_current: 'ac_01_temp_current',
+    },
+  },
+  {
+    id: 'preview_scene_home',
+    name: '回家模式',
+    category: 'scene',
+    room: '全屋',
+    slot: 1,
+    dps: { trigger: 'scene_01_trigger' },
+  },
+  {
+    id: 'preview_scene_away',
+    name: '离家模式',
+    category: 'scene',
+    room: '全屋',
+    slot: 2,
+    dps: { trigger: 'scene_02_trigger' },
+  },
+  {
+    id: 'preview_fresh_air',
+    name: '全屋新风',
+    category: 'fresh_air',
+    room: '全屋',
+    slot: 1,
+    dps: {
+      switch: 'fresh_air_01_switch',
+      mode: 'fresh_air_01_mode',
+      fan_speed: 'fresh_air_01_fan_speed',
+    },
+  },
+  {
+    id: 'preview_climate',
+    name: '客厅环境',
+    category: 'climate_sensor',
+    room: '客厅',
+    slot: 1,
+    dps: {
+      temperature: 'sensor_01_temperature',
+      humidity: 'sensor_01_humidity',
+    },
+  },
+];
+
+export const mockDpState = {
+  light_01_switch: true,
+  light_02_switch: false,
+  ac_01_switch: true,
+  ac_01_mode: 'cool',
+  ac_01_fan_speed: 'auto',
+  ac_01_temp_set: 240,
+  ac_01_temp_current: 268,
+  scene_01_trigger: false,
+  scene_02_trigger: false,
+  fresh_air_01_switch: true,
+  fresh_air_01_mode: 'auto',
+  fresh_air_01_fan_speed: 'middle',
+  sensor_01_temperature: 264,
+  sensor_01_humidity: 580,
+};

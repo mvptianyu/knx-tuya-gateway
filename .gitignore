@@ -17,15 +17,21 @@ coverage.*
 *.coverprofile
 profile.cov
 
-# Dependency directories (remove the comment below to include it)
-# vendor/
-
 # Go workspace file
 go.work
 go.work.sum
 
 # env file
 .env
+.env.rpi
+bin/
+panel/dist/
+panel/node_modules/
+
+# Local development data and runtime secrets
+data/
+config/config.json
+config/tuya-mqtt.env
 
 # Editor/IDE
 # .idea/

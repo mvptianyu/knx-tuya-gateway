@@ -1,0 +1,20 @@
+[Unit]
+Description=KNX-Tuya Bridge (Go, auto-discovery)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/knx-tuya-gw
+ExecStart=/opt/knx-tuya-gw/knx-tuya-gw -config /opt/knx-tuya-gw/config/config.json
+Restart=on-failure
+RestartPreventExitStatus=2
+RestartSec=5
+TimeoutStopSec=15
+User=root
+NoNewPrivileges=true
+PrivateTmp=true
+ReadWritePaths=/opt/knx-tuya-gw/config /opt/knx-tuya-gw/state
+
+[Install]
+WantedBy=multi-user.target

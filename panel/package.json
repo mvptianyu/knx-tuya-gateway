@@ -1,0 +1,33 @@
+{
+  "name": "knx-tuya-gateway-panel",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Smart Life custom panel for the KNX-Tuya gateway",
+  "scripts": {
+    "sync": "node scripts/sync-manifest.mjs",
+    "start": "npm run sync && ray start --target tuya",
+    "start:web": "npm run sync && ray start --target web",
+    "build": "npm run sync && ray build --target tuya",
+    "build:web": "npm run sync && ray build --target web",
+    "typecheck": "npm run sync && tsc --noEmit",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx"
+  },
+  "dependencies": {
+    "@ray-js/panel-sdk": "^1.16.1",
+    "@ray-js/ray": "^1.7.83",
+    "core-js": "^3.47.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@ray-js/cli": "^1.7.83",
+    "@ray-js/types": "^1.7.83",
+    "@types/react": "^17.0.24",
+    "@types/react-dom": "^17.0.9",
+    "eslint-config-tuya-panel": "^0.4.1",
+    "typescript": "5.9.3"
+  },
+  "overrides": {
+    "webpack": "5.99.9"
+  }
+}

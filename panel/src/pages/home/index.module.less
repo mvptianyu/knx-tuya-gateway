@@ -1,0 +1,510 @@
+.page {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at 12% 0, rgba(164, 207, 198, 0.22), transparent 300rpx),
+    linear-gradient(180deg, #e5f0ed 0, #edf3f4 500rpx, #f2f3f5 820rpx);
+}
+
+.scroll {
+  width: 100%;
+  height: 100%;
+}
+
+.content {
+  width: 100%;
+  max-width: 960px;
+  min-height: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.mockScroll {
+  overflow-y: auto;
+}
+
+.hero {
+  position: relative;
+  margin: 14rpx 18rpx 0;
+  padding: 30rpx 28rpx 24rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.08);
+  border-radius: 34rpx;
+  color: #f7faf8;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.055), transparent 42%),
+    linear-gradient(145deg, #294b40 0%, #1d372f 58%, #172e28 100%);
+  box-shadow: 0 20rpx 44rpx rgba(25, 54, 45, 0.16);
+  overflow: hidden;
+}
+
+.heroTop,
+.summaryRow,
+.sceneShortcuts,
+.sceneShortcut,
+.sectionHeading,
+.tabRow,
+.deviceGrid,
+.roomRow,
+.categoryHeading,
+.categoryIdentity,
+.status {
+  display: flex;
+  align-items: center;
+}
+
+.heroTop,
+.sectionHeading {
+  justify-content: space-between;
+}
+
+.eyebrow {
+  display: block;
+  margin-top: 5rpx;
+  position: relative;
+  z-index: 2;
+  color: rgba(229, 240, 235, 0.62);
+  font-size: 21rpx;
+}
+
+.title {
+  position: relative;
+  z-index: 2;
+  display: block;
+  font-size: 36rpx;
+  font-weight: 700;
+}
+
+.status {
+  position: relative;
+  z-index: 2;
+  gap: 8rpx;
+  padding: 10rpx 16rpx;
+  border-radius: 24rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.08);
+  color: rgba(239, 247, 243, 0.64);
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 19rpx;
+}
+
+.statusDot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #89938e;
+}
+
+.online {
+  color: #c8f3df;
+}
+
+.online .statusDot {
+  background: #62d7a9;
+  box-shadow: 0 0 0 6rpx rgba(98, 215, 169, 0.12);
+}
+
+.summaryRow {
+  position: relative;
+  z-index: 2;
+  gap: 12rpx;
+  margin-top: 24rpx;
+}
+
+.environmentItem {
+  flex: 1;
+  min-width: 0;
+  min-height: 110rpx;
+  padding: 18rpx 16rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.07);
+  border-radius: 20rpx;
+  background: rgba(255, 255, 255, 0.075);
+  box-sizing: border-box;
+}
+
+.environmentValue,
+.summaryLabel {
+  display: block;
+}
+
+.environmentValue {
+  display: block;
+  overflow: hidden;
+  color: #f7faf8;
+  font-size: 31rpx;
+  line-height: 1;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.freshAirValue {
+  font-size: 25rpx;
+}
+
+.freshAirOn {
+  color: #8ce4bd;
+}
+
+.summaryLabel {
+  margin-top: 10rpx;
+  overflow: hidden;
+  color: rgba(225, 237, 232, 0.54);
+  font-size: 18rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sceneShortcuts {
+  position: relative;
+  z-index: 2;
+  gap: 12rpx;
+  margin-top: 14rpx;
+}
+
+.sceneShortcut {
+  flex: 1;
+  min-width: 0;
+  gap: 12rpx;
+  padding: 18rpx 16rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.08);
+  border-radius: 20rpx;
+  background: rgba(255, 255, 255, 0.09);
+  box-sizing: border-box;
+}
+
+.sceneShortcutIcon {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15rpx;
+  color: #1c392f;
+  background: #8be3b9;
+  font-size: 19rpx;
+  font-weight: 800;
+}
+
+.away .sceneShortcutIcon {
+  color: #eaf1ee;
+  background: #607b70;
+}
+
+.sceneShortcutText {
+  flex: 1;
+  min-width: 0;
+}
+
+.sceneShortcutName,
+.sceneShortcutHint {
+  display: block;
+}
+
+.sceneShortcutName {
+  overflow: hidden;
+  color: #f4f8f6;
+  font-size: 22rpx;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sceneShortcutHint {
+  margin-top: 4rpx;
+  overflow: hidden;
+  color: rgba(228, 239, 234, 0.5);
+  font-size: 16rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sceneShortcutArrow {
+  color: rgba(235, 243, 239, 0.42);
+  font-size: 30rpx;
+}
+
+.sceneShortcutDisabled {
+  opacity: 0.48;
+}
+
+.heroGlow,
+.heroOrbit {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+.heroGlow {
+  right: -80rpx;
+  top: -100rpx;
+  width: 260rpx;
+  height: 260rpx;
+  background: radial-gradient(circle, rgba(125, 213, 172, 0.19), transparent 68%);
+}
+
+.heroOrbit {
+  right: 72rpx;
+  bottom: -180rpx;
+  width: 300rpx;
+  height: 300rpx;
+  border: 34rpx solid rgba(255, 255, 255, 0.035);
+}
+
+.tabs {
+  width: 100%;
+  margin-top: 14rpx;
+  border-bottom: 2rpx solid rgba(110, 126, 138, 0.08);
+  background: rgba(238, 244, 244, 0.92);
+  white-space: nowrap;
+}
+
+.mockTabs {
+  overflow-x: auto;
+}
+
+.tabRow {
+  width: max-content;
+  gap: 40rpx;
+  padding: 0 28rpx;
+}
+
+.tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 78rpx;
+  padding: 0 2rpx;
+  color: #78828a;
+  font-size: 27rpx;
+}
+
+.tabActive {
+  color: #171b1f;
+  font-weight: 700;
+}
+
+.tabActive::after {
+  content: "";
+  position: absolute;
+  right: 2rpx;
+  bottom: 0;
+  left: 2rpx;
+  height: 5rpx;
+  border-radius: 5rpx;
+  background: #202428;
+}
+
+.sectionHeading {
+  margin: 28rpx 28rpx 18rpx;
+}
+
+.sectionTitle {
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.sectionHint {
+  color: #92999f;
+  font-size: 20rpx;
+}
+
+.deviceGrid {
+  width: 100%;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: space-between;
+  padding: 0 24rpx;
+  box-sizing: border-box;
+}
+
+.roomScroller {
+  width: 100%;
+  background: rgba(241, 246, 249, 0.82);
+  white-space: nowrap;
+}
+
+.roomRow {
+  width: max-content;
+  gap: 34rpx;
+  padding: 0 28rpx;
+}
+
+.roomFilter {
+  display: inline-flex;
+  align-items: center;
+  height: 66rpx;
+  padding: 0;
+  color: #8b949b;
+  font-size: 23rpx;
+}
+
+.roomFilterDot {
+  display: none;
+}
+
+.roomFilterActive {
+  color: #202428;
+  font-weight: 700;
+}
+
+.overviewSections {
+  padding-top: 8rpx;
+}
+
+.categorySection {
+  margin: 20rpx 24rpx 0;
+  padding-top: 22rpx;
+  border-top: 2rpx solid #dfe4e8;
+}
+
+.categorySection:first-child {
+  margin-top: 8rpx;
+  padding-top: 16rpx;
+  border-top: 0;
+}
+
+.categoryHeading {
+  gap: 18rpx;
+  margin-bottom: 18rpx;
+}
+
+.categoryIdentity {
+  flex: none;
+  gap: 13rpx;
+}
+
+.categoryTitle,
+.categorySubtitle {
+  display: block;
+}
+
+.categoryTitle {
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.categorySubtitle {
+  margin-top: 3rpx;
+  color: #989fa5;
+  font-size: 17rpx;
+}
+
+.categoryRule {
+  flex: 1;
+  height: 2rpx;
+  background: linear-gradient(90deg, #d8dde1, transparent);
+}
+
+.categoryCount {
+  width: 42rpx;
+  height: 42rpx;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15rpx;
+  color: #7f888f;
+  background: #e3e7ea;
+  font-size: 18rpx;
+  font-weight: 700;
+}
+
+.categorySection .deviceGrid {
+  padding: 0;
+}
+
+@media screen and (max-width: 360px) {
+  .hero {
+    margin-right: 12rpx;
+    margin-left: 12rpx;
+    padding: 26rpx 20rpx 20rpx;
+    border-radius: 28rpx;
+  }
+
+  .summaryRow {
+    gap: 8rpx;
+    margin-top: 20rpx;
+  }
+
+  .environmentItem {
+    padding: 16rpx 12rpx;
+  }
+
+  .sceneShortcuts {
+    gap: 10rpx;
+    margin-top: 12rpx;
+  }
+
+  .sceneShortcut {
+    gap: 9rpx;
+    padding: 17rpx 12rpx;
+  }
+
+  .tabRow,
+  .roomRow {
+    padding-right: 16rpx;
+    padding-left: 16rpx;
+  }
+
+  .sectionHeading {
+    margin-right: 20rpx;
+    margin-left: 20rpx;
+  }
+
+  .deviceGrid {
+    padding-right: 16rpx;
+    padding-left: 16rpx;
+  }
+
+  .categorySection {
+    margin-right: 16rpx;
+    margin-left: 16rpx;
+  }
+}
+
+@media screen and (min-width: 600px) {
+  .content {
+    padding-bottom: 32px;
+  }
+
+  .hero {
+    margin-top: 16px;
+  }
+}
+
+.empty {
+  margin: 0 24rpx;
+  padding: 72rpx 40rpx;
+  border-radius: 28rpx;
+  background: #fff;
+  text-align: center;
+}
+
+.emptyTitle {
+  display: block;
+  font-size: 31rpx;
+  font-weight: 700;
+}
+
+.emptyText {
+  display: block;
+  margin-top: 16rpx;
+  color: #858b86;
+  font-size: 22rpx;
+  line-height: 1.7;
+}
+
+.previewNote {
+  margin: 28rpx 24rpx 0;
+  padding: 20rpx 24rpx;
+  border-radius: 24rpx;
+  color: #62717c;
+  background: #dfeaf2;
+  font-size: 20rpx;
+}
+
+.bottomSpace {
+  height: 60rpx;
+}

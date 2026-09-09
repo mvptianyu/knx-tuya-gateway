@@ -1,0 +1,57 @@
+{
+  "knx": {
+    "gateway": {
+      "host": "",
+      "port": 3671
+    },
+    "discovery": {
+      "enabled": true,
+      "multicast_group": "224.0.23.12",
+      "port": 3671,
+      "timeout_seconds": 5,
+      "broadcast_fallback": true
+    }
+  },
+  "tuya_mqtt": {
+    "enabled": true,
+    "gateway_node_id": "gateway",
+    "expected_product_id": "ue267xspp2htjgal",
+    "api_key": "replace_with_tuya_api_key",
+    "broker": "tls://m1.tuyacn.com:8883",
+    "credentials_file": "tuya-mqtt.env",
+    "keep_alive_seconds": 60,
+    "connect_timeout_seconds": 15,
+    "gateway_dp_pool": {
+      "strict": true,
+      "max_functions": 80,
+      "capacities": {
+        "light": 24,
+        "air_conditioner": 4,
+        "scene": 23,
+        "fresh_air": 1,
+        "climate_sensor": 3
+      }
+    }
+  },
+  "poll": {
+    "enabled": true,
+    "interval_ms": 50,
+    "after_write_delay_ms": 300,
+    "report_command_on_write_ack": true
+  },
+  "commissioning": {
+    "enabled": false,
+    "listen": "0.0.0.0:8090",
+    "review_file": "../state/knx-commission-review.csv",
+    "max_events": 100
+  },
+  "runtime_update": {
+    "enabled": true,
+    "watch_interval_seconds": 60,
+    "remote_url": "https://raw.githubusercontent.com/mvptianyu/config-gateway/refs/heads/main/knx/knx-mapping.json",
+    "remote_poll_seconds": 300,
+    "max_bytes": 2097152
+  },
+  "mapping_file": "knx-mapping.json",
+  "log_level": "info"
+}
