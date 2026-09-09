@@ -21,12 +21,12 @@ help:
 	  'make rpi ACTION=deploy             编译并部署树莓派' \
 	  'make rpi ACTION=config             仅同步运行配置' \
 	  'make rpi ACTION=review             下载现场确认 CSV' \
-	  'make rpi ACTION=status|logs|restart|info 线上运维' \
+	  'make rpi ACTION=status|logs|restart|info|diagnose 线上运维' \
 	  'make panel ACTION=dev|check|build  小程序开发、检查、构建' \
 	  'make mapping ACTION=import         导入 KNX Excel' \
 	  'make mapping ACTION=finalize       生成已审核升级配置' \
 	  'make mapping ACTION=validate       校验升级配置' \
-	  'make publish                       发布配置到 GitHub'
+	  'make publish                       发布配置到 Gitee'
 
 check:
 	go test ./...

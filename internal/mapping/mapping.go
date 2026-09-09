@@ -51,8 +51,8 @@ type Item struct {
 type Mapping struct {
 	Version    string
 	Items      []Item
-	byTuya     map[string]*Item // key: devID + "\x00" + dpCode
-	byStatusGA map[string]*Item // key: status_ga
+	byTuya     map[string]*Item   // key: devID + "\x00" + dpCode
+	byStatusGA map[string][]*Item // key: status_ga
 }
 
 // Bundle is the versioned runtime source shared by the gateway and panel.
@@ -117,7 +117,7 @@ func New(items []Item) (*Mapping, error) {
 	m := &Mapping{
 		Items:      items,
 		byTuya:     make(map[string]*Item, len(items)),
-		byStatusGA: make(map[string]*Item, len(items)),
+		byStatusGA: make(map[string][]*Item, len(items)),
 	}
 	for i := range items {
 		it := &items[i]
@@ -135,13 +135,61 @@ func New(items []Item) (*Mapping, error) {
 			return nil, fmt.Errorf("duplicate tuya mapping %s.%s (%q and %q)",
 				it.TuyaDevID, it.TuyaDPCode, previous.Name, it.Name)
 		}
-		if previous := m.byStatusGA[it.StatusGA]; previous != nil {
-			return nil, fmt.Errorf("duplicate status_ga %s (%q and %q)", it.StatusGA, previous.Name, it.Name)
+		for _, previous := range m.byStatusGA[it.StatusGA] {
+			if !isScene(previous) || !isScene(it) {
+				return nil, fmt.Errorf("duplicate status_ga %s (%q and %q)", it.StatusGA, previous.Name, it.Name)
+			}
+			if previous.KNXWriteValue == nil || it.KNXWriteValue == nil {
+				return nil, fmt.Errorf(
+					"shared scene status_ga %s requires knx_write_value (%q and %q)",
+					it.StatusGA, previous.Name, it.Name,
+				)
+			}
+			if !strings.EqualFold(previous.DPT, it.DPT) {
+				return nil, fmt.Errorf(
+					"shared scene status_ga %s has different DPTs %q and %q",
+					it.StatusGA, previous.DPT, it.DPT,
+				)
+			}
+			if scalarKey(previous.KNXWriteValue) == scalarKey(it.KNXWriteValue) {
+				return nil, fmt.Errorf(
+					"duplicate scene value %v on status_ga %s (%q and %q)",
+					it.KNXWriteValue, it.StatusGA, previous.Name, it.Name,
+				)
+			}
 		}
-		m.byStatusGA[it.StatusGA] = it
+		m.byStatusGA[it.StatusGA] = append(m.byStatusGA[it.StatusGA], it)
 		m.byTuya[tuyaKey] = it
 	}
 	return m, nil
+}
+
+func isScene(item *Item) bool {
+	return strings.EqualFold(strings.TrimSpace(item.Category), "scene")
+}
+
+func scalarKey(value interface{}) string {
+	switch typed := value.(type) {
+	case int:
+		return fmt.Sprintf("number:%g", float64(typed))
+	case int32:
+		return fmt.Sprintf("number:%g", float64(typed))
+	case int64:
+		return fmt.Sprintf("number:%g", float64(typed))
+	case uint8:
+		return fmt.Sprintf("number:%g", float64(typed))
+	case uint16:
+		return fmt.Sprintf("number:%g", float64(typed))
+	case uint32:
+		return fmt.Sprintf("number:%g", float64(typed))
+	case float32:
+		return fmt.Sprintf("number:%g", float64(typed))
+	case float64:
+		return fmt.Sprintf("number:%g", typed)
+	default:
+		encoded, _ := json.Marshal(value)
+		return fmt.Sprintf("%T:%s", value, encoded)
+	}
 }
 
 func supportedDPT(value string) bool {
@@ -170,8 +218,8 @@ func (m *Mapping) ByTuya(devID, dpCode string) *Item {
 	return m.byTuya[devID+"\x00"+dpCode]
 }
 
-// ByStatusGA 按 KNX 状态反馈组地址查找（KNX 事件 -> 涂鸦上报）。
-func (m *Mapping) ByStatusGA(ga string) *Item {
+// ByStatusGA 按 KNX 状态反馈组地址查找全部映射（场景可共享同一组地址）。
+func (m *Mapping) ByStatusGA(ga string) []*Item {
 	return m.byStatusGA[ga]
 }
 

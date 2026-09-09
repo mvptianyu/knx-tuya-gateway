@@ -73,7 +73,7 @@ type PollConfig struct {
 	Enabled                 bool `json:"enabled"`
 	IntervalMs              int  `json:"interval_ms"`                 // 默认 50，防 KNX 总线风暴
 	AfterWriteDelayMs       int  `json:"after_write_delay_ms"`        // 默认 300，写入后回读状态地址
-	ReportCommandOnWriteAck bool `json:"report_command_on_write_ack"` // 无反馈时按已确认写入值更新涂鸦
+	ReportCommandOnWriteAck bool `json:"report_command_on_write_ack"` // 兼容无反馈设备；会把隧道写成功视为设备状态
 }
 
 // CommissioningConfig controls the local KNX capture and confirmation page.
@@ -132,7 +132,7 @@ func Default() *Config {
 			Enabled:                 true,
 			IntervalMs:              50,
 			AfterWriteDelayMs:       300,
-			ReportCommandOnWriteAck: true,
+			ReportCommandOnWriteAck: false,
 		},
 		Commissioning: CommissioningConfig{
 			Enabled:    false,

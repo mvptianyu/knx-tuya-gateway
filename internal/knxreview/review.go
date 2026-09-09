@@ -23,25 +23,25 @@ var reviewHeader = []string{
 }
 
 type Record struct {
-	Result          string
-	SourceFile      string
-	SourceSheet     string
-	SourceRow       string
-	Name            string
-	Category        string
-	Room            string
-	Capability      string
-	GA              string
-	StatusGA        string
-	DPT             string
-	TuyaDPType      string
-	Slot            int
-	VirtualDeviceID string
-	TuyaDPCode      string
-	KNXWriteValue   string
-	TuyaToKNXJSON   string
-	KNXToTuyaJSON   string
-	Notes           string
+	Result          string `json:"result"`
+	SourceFile      string `json:"source_file"`
+	SourceSheet     string `json:"source_sheet"`
+	SourceRow       string `json:"source_row"`
+	Name            string `json:"name"`
+	Category        string `json:"category"`
+	Room            string `json:"room"`
+	Capability      string `json:"capability"`
+	GA              string `json:"ga"`
+	StatusGA        string `json:"status_ga"`
+	DPT             string `json:"dpt"`
+	TuyaDPType      string `json:"tuya_dp_type"`
+	Slot            int    `json:"slot"`
+	VirtualDeviceID string `json:"virtual_device_id"`
+	TuyaDPCode      string `json:"tuya_dp_code"`
+	KNXWriteValue   string `json:"knx_write_value,omitempty"`
+	TuyaToKNXJSON   string `json:"tuya_to_knx_json,omitempty"`
+	KNXToTuyaJSON   string `json:"knx_to_tuya_json,omitempty"`
+	Notes           string `json:"notes,omitempty"`
 }
 
 type Identity struct {
@@ -427,6 +427,24 @@ func UpsertReviewRecord(path string, record Record) error {
 	for index, existing := range records {
 		if existing.Category == record.Category && existing.Slot == record.Slot &&
 			existing.Capability == record.Capability {
+			var err error
+			record.TuyaToKNXJSON, err = mergeJSONObjectStrings(
+				existing.TuyaToKNXJSON,
+				record.TuyaToKNXJSON,
+			)
+			if err != nil {
+				return fmt.Errorf("merge tuya_to_knx_json: %w", err)
+			}
+			record.KNXToTuyaJSON, err = mergeJSONObjectStrings(
+				existing.KNXToTuyaJSON,
+				record.KNXToTuyaJSON,
+			)
+			if err != nil {
+				return fmt.Errorf("merge knx_to_tuya_json: %w", err)
+			}
+			if record.KNXWriteValue == "" {
+				record.KNXWriteValue = existing.KNXWriteValue
+			}
 			records[index] = record
 			replaced = true
 			break
@@ -436,6 +454,27 @@ func UpsertReviewRecord(path string, record Record) error {
 		records = append(records, record)
 	}
 	return writeReviewCSV(path, records)
+}
+
+func mergeJSONObjectStrings(existing, incoming string) (string, error) {
+	if strings.TrimSpace(incoming) == "" {
+		return existing, nil
+	}
+	merged := make(map[string]interface{})
+	if strings.TrimSpace(existing) != "" {
+		if err := json.Unmarshal([]byte(existing), &merged); err != nil {
+			return "", err
+		}
+	}
+	var values map[string]interface{}
+	if err := json.Unmarshal([]byte(incoming), &values); err != nil {
+		return "", err
+	}
+	for key, value := range values {
+		merged[key] = value
+	}
+	raw, err := json.Marshal(merged)
+	return string(raw), err
 }
 
 // AllocateIdentity reuses a logical device slot by category/name/room or picks the first free slot.

@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/vapourismo/knx-go/knx/dpt"
+
 	"knx-tuya-gw/internal/config"
 	"knx-tuya-gw/internal/mapping"
 )
@@ -63,6 +65,43 @@ func TestTuyaValueTransforms(t *testing.T) {
 	}
 }
 
+func TestStatusUpdatesForSharedSceneGA(t *testing.T) {
+	m, err := mapping.New([]mapping.Item{
+		{
+			GA: "1/0/200", StatusGA: "1/0/200", Name: "总开场景",
+			DPT: "DPT-17.001", TuyaDevID: "gateway", TuyaDPCode: "scene_01_trigger",
+			TuyaDPType: "bool", Category: "scene", KNXWriteValue: float64(0),
+		},
+		{
+			GA: "1/0/200", StatusGA: "1/0/200", Name: "会客场景",
+			DPT: "DPT-17.001", TuyaDevID: "gateway", TuyaDPCode: "scene_02_trigger",
+			TuyaDPType: "bool", Category: "scene", KNXWriteValue: float64(4),
+		},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	updates, err := statusUpdatesForEvent(m, "1/0/200", dpt.DPT_17001(4).Pack())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(updates) != 1 {
+		t.Fatalf("scene updates = %d, want 1: %+v", len(updates), updates)
+	}
+	if updates[0].Item.Name != "会客场景" || updates[0].Value != true {
+		t.Fatalf("scene update = %+v, want 会客场景=true", updates[0])
+	}
+
+	updates, err = statusUpdatesForEvent(m, "1/0/200", dpt.DPT_17001(0).Pack())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(updates) != 1 || updates[0].Item.Name != "总开场景" || updates[0].Value != true {
+		t.Fatalf("scene zero update = %+v, want 总开场景=true", updates)
+	}
+}
+
 func TestValidateTuyaModeMapping(t *testing.T) {
 	m, err := mapping.New([]mapping.Item{{
 		GA: "1/2/12", StatusGA: "1/2/11", Name: "Bathroom",
@@ -90,8 +129,8 @@ func TestPollAfterWriteDelayDefault(t *testing.T) {
 	if cfg.Poll.AfterWriteDelayMs != 300 {
 		t.Fatalf("after-write delay = %d, want 300", cfg.Poll.AfterWriteDelayMs)
 	}
-	if !cfg.Poll.ReportCommandOnWriteAck {
-		t.Fatal("report command on write ACK should be enabled by default")
+	if cfg.Poll.ReportCommandOnWriteAck {
+		t.Fatal("report command on write ACK should be disabled by default")
 	}
 }
 

@@ -95,6 +95,7 @@ make panel ACTION=build
 ```
 
 正式构建要求 `config/config.json` 中已有 HTTPS `remote_url`；空地址会直接失败，避免误发布成只使用静态清单的版本。
+涂鸦平台请求合法域名需包含 `raw.giteeusercontent.com`。
 
 Tuya 小程序产物在 `panel/dist/tuya/`。使用涂鸦 MiniApp IDE 创建面板项目后：
 

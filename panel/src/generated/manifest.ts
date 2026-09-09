@@ -5,13 +5,87 @@ export const panelManifest = {
   "version": 1,
   "devices": [
     {
-      "id": "public_bathroom_light",
+      "id": "ac_01",
+      "name": "空调",
+      "category": "air_conditioner",
+      "room": "客厅",
+      "slot": 1,
+      "dps": {
+        "switch": "ac_01_switch",
+        "mode": "ac_01_mode",
+        "fan_speed": "ac_01_fan_speed",
+        "temp_set": "ac_01_temp_set"
+      }
+    },
+    {
+      "id": "fresh_air_01",
+      "name": "新风",
+      "category": "fresh_air",
+      "room": "客厅",
+      "slot": 1,
+      "dps": {
+        "switch": "fresh_air_01_switch",
+        "fan_speed": "fresh_air_01_fan_speed"
+      }
+    },
+    {
+      "id": "light_01",
       "name": "公卫灯",
       "category": "light",
       "room": "公卫",
       "slot": 1,
       "dps": {
         "switch": "light_01_switch"
+      }
+    },
+    {
+      "id": "light_02",
+      "name": "客厅射灯",
+      "category": "light",
+      "room": "客厅",
+      "slot": 2,
+      "dps": {
+        "switch": "light_02_switch"
+      }
+    },
+    {
+      "id": "light_03",
+      "name": "客餐厅轨道灯",
+      "category": "light",
+      "room": "客厅",
+      "slot": 3,
+      "dps": {
+        "switch": "light_03_switch"
+      }
+    },
+    {
+      "id": "light_04",
+      "name": "客餐厅灯带",
+      "category": "light",
+      "room": "客厅",
+      "slot": 4,
+      "dps": {
+        "switch": "light_04_switch"
+      }
+    },
+    {
+      "id": "scene_01",
+      "name": "总开场景",
+      "category": "scene",
+      "room": "客厅",
+      "slot": 1,
+      "dps": {
+        "trigger": "scene_01_trigger"
+      }
+    },
+    {
+      "id": "scene_02",
+      "name": "会客场景",
+      "category": "scene",
+      "room": "客厅",
+      "slot": 2,
+      "dps": {
+        "trigger": "scene_02_trigger"
       }
     }
   ]

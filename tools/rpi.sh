@@ -141,6 +141,10 @@ case "$ACTION" in
   info)
     remote "$(declare -f collect_info); collect_info"
     ;;
+  diagnose)
+    remote "printf '%s\n' 'time:'; date -Is; timedatectl show -p NTPSynchronized -p TimeUSec 2>/dev/null || true; for host in m1.tuyacn.com m2.tuyacn.com; do printf '%s\n' '' \"dns-\$host:\"; getent ahosts \"\$host\" || true; printf '%s\n' \"tcp-\$host-8883:\"; timeout 8 bash -c \"cat < /dev/null > /dev/tcp/\$host/8883\" && echo connected || echo failed; printf '%s\n' \"tls-\$host-8883:\"; timeout 10 openssl s_client -connect \"\$host:8883\" -servername \"\$host\" -tls1_2 -brief < /dev/null 2>&1 || true; done; printf '%s\n' '' 'gateway-processes:'; pgrep -af knx-tuya-gw || true"
+    remote_root "printf '%s\n' 'recent-tuya-logs:'; journalctl -u knx-tuya-bridge.service -n 300 --no-pager | grep -E 'Tuya MQTT|Tuya property|product mismatch|credentials' | tail -n 80 || true"
+    ;;
   review)
     mkdir -p "$ROOT_DIR/data"
     sync_files \
@@ -149,7 +153,7 @@ case "$ACTION" in
     echo "downloaded: data/knx-commission-review.csv"
     ;;
   *)
-    echo "usage: $0 {build|deploy|config|status|logs|restart|info|review}" >&2
+    echo "usage: $0 {build|deploy|config|status|logs|restart|info|diagnose|review}" >&2
     exit 2
     ;;
 esac

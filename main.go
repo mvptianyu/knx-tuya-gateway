@@ -13,6 +13,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -22,6 +23,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"syscall"
 	"time"
 
@@ -179,7 +181,7 @@ func main() {
 			logger.Errorf("create Tuya MQTT client failed: %v", err)
 			os.Exit(1)
 		}
-		if err := tuyaClient.Start(ctx); err != nil {
+		if err := tuyaClient.StartOnce(ctx); err != nil {
 			logger.Errorf("Tuya MQTT check failed: %v", err)
 			os.Exit(1)
 		}
@@ -231,6 +233,7 @@ func main() {
 			cfg.MappingFile,
 			cfg.TuyaMQTT.GatewayDPPool.Capacities,
 		)
+		commissioning.SetBus(client)
 		go func() {
 			if err := commissioning.Start(ctx); err != nil {
 				logger.Errorf("KNX commissioning server failed: %v", err)
@@ -268,7 +271,7 @@ func main() {
 					)
 				} else {
 					logger.Infof(
-						"Tuya command fallback reported: %s.%s=%v (awaiting KNX status feedback)",
+						"Tuya command fallback accepted/queued: %s.%s=%v (awaiting KNX status feedback)",
 						nodeID,
 						dpCode,
 						value,
@@ -278,8 +281,15 @@ func main() {
 			return nil
 		})
 		if err := tuyaClient.Start(ctx); err != nil {
-			logger.Errorf("start Tuya MQTT failed: %v", err)
-			os.Exit(1)
+			if errors.Is(err, tuyamqtt.ErrInitialConnectPending) {
+				logger.Warnf(
+					"Tuya MQTT initial connection timed out; service remains running and retries every 5s: %v",
+					err,
+				)
+			} else {
+				logger.Errorf("start Tuya MQTT failed: %v", err)
+				os.Exit(1)
+			}
 		}
 		defer tuyaClient.Close()
 	} else {
@@ -294,25 +304,25 @@ func main() {
 		if ev.Command != "write" && ev.Command != "response" {
 			return // 忽略读请求
 		}
-		item := mappingStore.Current().ByStatusGA(ev.GA)
-		if item == nil {
+		updates, err := statusUpdatesForEvent(mappingStore.Current(), ev.GA, ev.Data)
+		if err != nil {
+			logger.Warnf("cannot process KNX value for %s raw=%s: %v", ev.GA, ev.RawHex, err)
+			return
+		}
+		if len(updates) == 0 {
 			logger.Debugf("KNX event on unmapped GA %s, ignore", ev.GA)
 			return
 		}
-		decoded, err := knxclient.DecodeValue(item.DPT, ev.Data)
-		if err != nil {
-			logger.Warnf("cannot decode value for %s(%s) raw=%s: %v", ev.GA, item.DPT, ev.RawHex, err)
-			return
-		}
-		value := normalizeTuyaValue(decoded, item)
-		if value == nil {
-			logger.Warnf("cannot normalize value for %s(%s) decoded=%v", ev.GA, item.TuyaDPType, decoded)
-			return
-		}
-		logger.Infof("KNX %s=%v -> tuya %s.%s", ev.GA, value, item.TuyaDevID, item.TuyaDPCode)
-		if tuyaClient != nil {
-			if err := tuyaClient.Report(item.TuyaDevID, item.TuyaDPCode, value); err != nil {
-				logger.Warnf("Tuya property report queued/failed: %v", err)
+		for _, update := range updates {
+			item := update.Item
+			logger.Infof(
+				"KNX %s=%v -> tuya %s.%s",
+				ev.GA, update.Value, item.TuyaDevID, item.TuyaDPCode,
+			)
+			if tuyaClient != nil {
+				if err := tuyaClient.Report(item.TuyaDevID, item.TuyaDPCode, update.Value); err != nil {
+					logger.Warnf("Tuya property report failed: %v", err)
+				}
 			}
 		}
 	})
@@ -642,6 +652,50 @@ func pollAllStatus(client *knxclient.Client, m *mapping.Mapping, intervalMs int)
 		}
 	}
 	logger.Infof("status polling done")
+}
+
+type statusUpdate struct {
+	Item  *mapping.Item
+	Value interface{}
+}
+
+func statusUpdatesForEvent(m *mapping.Mapping, ga string, data []byte) ([]statusUpdate, error) {
+	items := m.ByStatusGA(ga)
+	updates := make([]statusUpdate, 0, len(items))
+	for _, item := range items {
+		decoded, err := knxclient.DecodeValue(item.DPT, data)
+		if err != nil {
+			return nil, fmt.Errorf("%s(%s): %w", ga, item.DPT, err)
+		}
+
+		if strings.EqualFold(strings.TrimSpace(item.Category), "scene") {
+			if !sameScalarValue(decoded, item.KNXWriteValue) {
+				continue
+			}
+			// Scene DPs are triggers: scene number 0 still means the matched DP was activated.
+			updates = append(updates, statusUpdate{Item: item, Value: true})
+			continue
+		}
+
+		value := normalizeTuyaValue(decoded, item)
+		if value == nil {
+			return nil, fmt.Errorf(
+				"cannot normalize %s as %s, decoded=%v",
+				item.Name, item.TuyaDPType, decoded,
+			)
+		}
+		updates = append(updates, statusUpdate{Item: item, Value: value})
+	}
+	return updates, nil
+}
+
+func sameScalarValue(left, right interface{}) bool {
+	leftNumber, leftOK := numericValue(left)
+	rightNumber, rightOK := numericValue(right)
+	if leftOK || rightOK {
+		return leftOK && rightOK && leftNumber == rightNumber
+	}
+	return valueMapKey(left) == valueMapKey(right)
 }
 
 // normalizeTuyaValue 按映射项的涂鸦 DP 类型规范化已解码的 KNX 值。

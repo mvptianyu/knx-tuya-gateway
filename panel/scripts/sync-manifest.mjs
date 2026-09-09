@@ -21,7 +21,7 @@ const mappings = Array.isArray(mappingSource)
 const manifest = buildManifest(mappings);
 const runtimeBundleURL =
   runtimeConfig.runtime_update?.remote_url ||
-  'https://raw.githubusercontent.com/mvptianyu/config-gateway/refs/heads/main/knx/knx-mapping.json';
+  'https://raw.giteeusercontent.com/mvptianyu/config-gateway/raw/master/knx/knx-mapping.json';
 
 if (!runtimeBundleURL.startsWith('https://')) {
   throw new Error(`Panel runtime bundle URL must use HTTPS: ${runtimeBundleURL}`);

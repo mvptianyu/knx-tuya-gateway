@@ -26,7 +26,7 @@ cp .env.rpi.example .env.rpi
 地址为：
 
 ```text
-https://raw.githubusercontent.com/mvptianyu/config-gateway/refs/heads/main/knx/knx-mapping.json
+https://raw.giteeusercontent.com/mvptianyu/config-gateway/raw/master/knx/knx-mapping.json
 ```
 
 ## 2. 配置树莓派登录
@@ -119,7 +119,7 @@ make panel ACTION=build
 
 在 Tuya MiniApp IDE 导入 `panel/`，选择设备面板/Ray，关联网关 PID 和测试设备。完成真机
 调试后上传体验版、提交审核并发布，再把面板关联到网关产品。平台需要将
-`raw.githubusercontent.com` 加入请求合法域名。更多细节见 `panel/README.md`。
+`raw.giteeusercontent.com` 加入请求合法域名。更多细节见 `panel/README.md`。
 
 ## 7. KNX 清单审核
 
@@ -171,7 +171,7 @@ make mapping ACTION=validate
 输出为 `data/knx-mapping-for-upgrade.json`，只有 `passed` 行会进入结果。重复 DP、重复状态
 GA、DPT 错误和槽位超限都会被拒绝。
 
-## 8. GitHub 热更新
+## 8. Gitee 热更新
 
 发布前确保本机 Git 已能访问 `mvptianyu/config-gateway`：
 
@@ -180,12 +180,22 @@ make publish
 ```
 
 工具会临时克隆配置仓库，只把升级文件发布为 `knx/knx-mapping.json`，不会上传源码仓库
-历史、密钥或 Excel。需要覆盖默认值时可直接传环境变量：
+历史、密钥或 Excel。脚本自动读取 `.env.rpi`，HTTPS 发布配置示例：
 
 ```bash
-GITHUB_REMOTE=git@github.com:mvptianyu/config-gateway.git \
-GITHUB_BRANCH=main \
-GITHUB_BUNDLE_PATH=knx/knx-mapping.json \
+GITEE_USERNAME=mvptianyu
+GITEE_TOKEN=你的Gitee私人令牌
+GITEE_GIT_AUTHOR_NAME=mvptianyu
+GITEE_GIT_AUTHOR_EMAIL=ly_258@126.com
+GITEE_REMOTE=https://gitee.com/mvptianyu/config-gateway.git
+GITEE_BRANCH=master
+GITEE_BUNDLE_PATH=knx/knx-mapping.json
+```
+
+先执行无副作用认证检查，再正式发布：
+
+```bash
+GITEE_DRY_RUN=1 make publish
 make publish
 ```
 
@@ -203,6 +213,7 @@ Schema、超过槽位容量或修改远程 URL 时仍需更新平台或重新发
 | sudo 仍询问密码 | 设置 `RPI_SUDO_PASSWORD`；留空只会复用 `RPI_PASSWORD` |
 | KNX 扫描失败 | 在同网段树莓派扫描，检查组播和 UDP 3671，生产可固定 IP |
 | Smart Life 网关离线 | 核对 MQTT、Device ID、broker 区域，并排除重复客户端 |
+| `Tuya MQTT initial connection timed out` | 服务会保持运行并每 5 秒后台重试；在树莓派执行 `getent hosts m1.tuyacn.com`、`nc -vz -w 5 m1.tuyacn.com 8883` 和 `timedatectl status`，分别检查 DNS、TCP 8883 出口和系统时间 |
 | 设备不存在功能点 | PID 未发布对应 DP，或 DP code/类型不一致 |
 | 面板下发 `20028` | 核对体验设备授权、TuyaLink 物模型、PID 和面板版本 |
 | 树莓派无下发日志 | 面板到涂鸦云链路或 Device ID 不一致 |

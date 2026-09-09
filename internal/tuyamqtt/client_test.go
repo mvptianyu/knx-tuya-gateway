@@ -68,9 +68,17 @@ func TestNewGatewayDPClient(t *testing.T) {
 		!strings.Contains(err.Error(), `requires node_id "gateway"`) {
 		t.Fatalf("unexpected node validation error: %v", err)
 	}
-	if err := client.Report("gateway", "light_switch", true); err == nil ||
-		!strings.Contains(err.Error(), "not connected") {
-		t.Fatalf("unexpected disconnected report error: %v", err)
+	if err := client.Report("gateway", "light_switch", false); err != nil {
+		t.Fatalf("queue disconnected report: %v", err)
+	}
+	if err := client.Report("gateway", "light_switch", true); err != nil {
+		t.Fatalf("replace queued report: %v", err)
+	}
+	if client.pendingPropertyCount() != 1 {
+		t.Fatalf("pending property count = %d, want 1", client.pendingPropertyCount())
+	}
+	if got := client.pending["light_switch"].value; got != true {
+		t.Fatalf("latest pending light_switch = %v, want true", got)
 	}
 
 	_, err = New(config.TuyaMQTTConfig{

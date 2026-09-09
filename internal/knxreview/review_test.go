@@ -156,13 +156,18 @@ func TestAllocateIdentityRejectsExhaustedCapacity(t *testing.T) {
 func TestUpsertReviewRecordReplacesSameCapability(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "review.csv")
 	first := Record{
-		Result: "passed", Category: "light", Capability: "switch", Slot: 1,
+		Result: "passed", Category: "air_conditioner", Capability: "mode", Slot: 1,
 		Name: "公卫灯", GA: "1/2/12", StatusGA: "1/2/11",
+		KNXWriteValue: "1", TuyaToKNXJSON: `{"cool":1}`,
+		KNXToTuyaJSON: `{"1":"cool"}`,
 	}
 	if err := UpsertReviewRecord(path, first); err != nil {
 		t.Fatal(err)
 	}
 	first.GA = "1/2/13"
+	first.KNXWriteValue = ""
+	first.TuyaToKNXJSON = `{"heat":2}`
+	first.KNXToTuyaJSON = `{"2":"heat"}`
 	if err := UpsertReviewRecord(path, first); err != nil {
 		t.Fatal(err)
 	}
@@ -170,7 +175,10 @@ func TestUpsertReviewRecordReplacesSameCapability(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(records) != 1 || records[0].GA != "1/2/13" {
+	if len(records) != 1 || records[0].GA != "1/2/13" ||
+		records[0].KNXWriteValue != "1" ||
+		records[0].TuyaToKNXJSON != `{"cool":1,"heat":2}` ||
+		records[0].KNXToTuyaJSON != `{"1":"cool","2":"heat"}` {
 		t.Fatalf("unexpected records: %+v", records)
 	}
 }

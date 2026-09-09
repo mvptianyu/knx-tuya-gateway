@@ -13,7 +13,7 @@ vendor/                        Go 依赖本地副本，常规构建不联网下�
 panel/node_modules/            面板依赖本地副本，依赖未变化时无需重装
 config/                        本地与树莓派运行配置
 data/                          本地 Excel、审核表和平台导入产物，不部署
-tools/                         树莓派运维、GitHub 配置发布工具
+tools/                         树莓派运维、Gitee 配置发布工具
 deploy/                        systemd 服务与安装脚本
 docs/                          接入手册和架构说明
 ```

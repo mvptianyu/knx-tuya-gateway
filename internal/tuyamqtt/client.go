@@ -10,10 +10,12 @@ import (
 	"crypto/x509"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -22,6 +24,10 @@ import (
 	"knx-tuya-gw/internal/config"
 	"knx-tuya-gw/internal/logger"
 )
+
+// ErrInitialConnectPending means Paho is still retrying the initial connection
+// in the background. Runtime services may continue; explicit health checks should fail.
+var ErrInitialConnectPending = errors.New("Tuya MQTT initial connection still pending")
 
 type Credentials struct {
 	ProductID    string
@@ -39,6 +45,14 @@ type Client struct {
 	onCmd CommandHandler
 
 	disconnects atomic.Uint64
+	pendingMu   sync.Mutex
+	pendingSeq  uint64
+	pending     map[string]pendingProperty
+}
+
+type pendingProperty struct {
+	sequence uint64
+	value    interface{}
 }
 
 type envelope struct {
@@ -69,7 +83,11 @@ func New(cfg config.TuyaMQTTConfig) (*Client, error) {
 	if creds.Broker != "" {
 		cfg.Broker = creds.Broker
 	}
-	return &Client{cfg: cfg, creds: creds}, nil
+	return &Client{
+		cfg:     cfg,
+		creds:   creds,
+		pending: make(map[string]pendingProperty),
+	}, nil
 }
 
 func (c *Client) OnCommand(handler CommandHandler) {
@@ -77,6 +95,16 @@ func (c *Client) OnCommand(handler CommandHandler) {
 }
 
 func (c *Client) Start(ctx context.Context) error {
+	return c.start(ctx, true)
+}
+
+// StartOnce performs one connection attempt so diagnostics can expose the
+// broker's TLS or CONNACK error instead of hiding it behind automatic retries.
+func (c *Client) StartOnce(ctx context.Context) error {
+	return c.start(ctx, false)
+}
+
+func (c *Client) start(ctx context.Context, retry bool) error {
 	tlsConfig, err := c.tlsConfig()
 	if err != nil {
 		return err
@@ -92,10 +120,17 @@ func (c *Client) Start(ctx context.Context) error {
 		SetKeepAlive(time.Duration(c.cfg.KeepAliveSeconds) * time.Second).
 		SetConnectTimeout(time.Duration(c.cfg.ConnectTimeout) * time.Second).
 		SetAutoReconnect(true).
-		SetConnectRetry(true).
+		SetConnectRetry(retry).
+		SetConnectRetryInterval(5 * time.Second).
 		SetCleanSession(false).
 		SetOrderMatters(false)
 	opts.SetOnConnectHandler(func(_ mqtt.Client) {
+		logger.Infof(
+			"Tuya MQTT connected: broker=%s product=%s device=%s",
+			c.cfg.Broker,
+			c.creds.ProductID,
+			c.creds.DeviceID,
+		)
 		go c.restoreSession()
 	})
 	opts.SetConnectionLostHandler(func(_ mqtt.Client, err error) {
@@ -106,17 +141,14 @@ func (c *Client) Start(ctx context.Context) error {
 
 	token := c.mqtt.Connect()
 	if !token.WaitTimeout(time.Duration(c.cfg.ConnectTimeout+5) * time.Second) {
-		return fmt.Errorf("Tuya MQTT connect timeout: %s", c.cfg.Broker)
+		if !retry {
+			return fmt.Errorf("Tuya MQTT one-shot connect timeout: %s", c.cfg.Broker)
+		}
+		return fmt.Errorf("%w: %s", ErrInitialConnectPending, c.cfg.Broker)
 	}
 	if err := token.Error(); err != nil {
 		return fmt.Errorf("Tuya MQTT connect %s: %w", c.cfg.Broker, err)
 	}
-	logger.Infof(
-		"Tuya MQTT connected: broker=%s product=%s device=%s",
-		c.cfg.Broker,
-		c.creds.ProductID,
-		c.creds.DeviceID,
-	)
 
 	go func() {
 		<-ctx.Done()
@@ -147,7 +179,15 @@ func (c *Client) Report(nodeID, dpCode string, value interface{}) error {
 			nodeID,
 		)
 	}
-	return c.publishProperty(dpCode, value)
+	if !c.connected() {
+		c.queueProperty(dpCode, value)
+		return nil
+	}
+	if err := c.publishProperty(dpCode, value); err != nil {
+		c.queueProperty(dpCode, value)
+		logger.Warnf("Tuya property %s publish failed and latest value was queued: %v", dpCode, err)
+	}
+	return nil
 }
 
 func MQTTCredentials(deviceID, deviceSecret string, now time.Time) (clientID, username, password string) {
@@ -177,6 +217,55 @@ func (c *Client) restoreSession() {
 	if err := c.requestThingModel(); err != nil {
 		logger.Warnf("Tuya cloud model request failed: %v", err)
 	}
+	c.flushPendingProperties()
+}
+
+func (c *Client) queueProperty(dpCode string, value interface{}) {
+	c.pendingMu.Lock()
+	defer c.pendingMu.Unlock()
+	c.pendingSeq++
+	c.pending[dpCode] = pendingProperty{sequence: c.pendingSeq, value: value}
+}
+
+func (c *Client) flushPendingProperties() {
+	c.pendingMu.Lock()
+	snapshot := make(map[string]pendingProperty, len(c.pending))
+	for dpCode, property := range c.pending {
+		snapshot[dpCode] = property
+	}
+	c.pendingMu.Unlock()
+
+	flushed := 0
+	for dpCode, property := range snapshot {
+		if err := c.publishProperty(dpCode, property.value); err != nil {
+			logger.Warnf(
+				"Tuya pending property flush paused: flushed=%d remaining=%d error=%v",
+				flushed,
+				c.pendingPropertyCount(),
+				err,
+			)
+			return
+		}
+		c.pendingMu.Lock()
+		if current, ok := c.pending[dpCode]; ok && current.sequence == property.sequence {
+			delete(c.pending, dpCode)
+			flushed++
+		}
+		c.pendingMu.Unlock()
+	}
+	if flushed > 0 {
+		logger.Infof(
+			"Tuya pending property reports flushed: count=%d remaining=%d",
+			flushed,
+			c.pendingPropertyCount(),
+		)
+	}
+}
+
+func (c *Client) pendingPropertyCount() int {
+	c.pendingMu.Lock()
+	defer c.pendingMu.Unlock()
+	return len(c.pending)
 }
 
 func (c *Client) handleMessage(_ mqtt.Client, message mqtt.Message) {
