@@ -17,7 +17,6 @@ import { defaultSchema } from '@/generated/schema';
 import {
   runtimeBundlePollSeconds,
   runtimeBundleURL,
-  panelVersion,
 } from '@/generated/runtime';
 import { mockDevices, mockDpState } from '@/mock/devices';
 import {
@@ -705,8 +704,9 @@ export function Home() {
     Record<string, DpSchema | undefined>
   >({});
   const [runtimeVersion, setRuntimeVersion] = React.useState('内置配置');
-  const [sceneDiagnostics, setSceneDiagnostics] =
-    React.useState<SceneDiagnostics | null>(null);
+  const [productVersion, setProductVersion] = React.useState(
+    mock ? '预览' : '读取中'
+  );
 
   const devices = mock ? mockDevices : runtimeDevices || panelDevices;
   const schemaByCode = mock
@@ -778,6 +778,7 @@ export function Home() {
     };
     applyDpIds(devInfo?.dps);
     setCloudSchemaByCode(indexDpSchemas(devInfo?.schema));
+    setProductVersion(devInfo?.productVer || '未知');
     console.info('Panel device diagnostics', {
       deviceId: devInfo?.devId,
       productId: devInfo?.productId,
@@ -799,7 +800,6 @@ export function Home() {
           homeAdmin: home.admin,
           homeRole: home.role,
         };
-        setSceneDiagnostics(diagnostics);
         console.info('Panel scene eligibility diagnostics', diagnostics);
       },
       fail: error => {
@@ -815,14 +815,18 @@ export function Home() {
           homeRole: -1,
           error: getErrorMessage(error),
         };
-        setSceneDiagnostics(diagnostics);
+        console.info('Panel scene eligibility diagnostics', diagnostics);
         console.warn('Panel home diagnostics failed', error);
       },
     });
     if (devInfo?.devId) {
-      ensureThingModelReady(devInfo.devId).catch(error => {
-        console.warn('TuyaLink thing model initialization failed', error);
-      });
+      ensureThingModelReady(devInfo.devId)
+        .then(info => {
+          setProductVersion(info.productVersion || devInfo.productVer || '未知');
+        })
+        .catch(error => {
+          console.warn('TuyaLink thing model initialization failed', error);
+        });
     }
 
     const listenerId = sdmDevices.gateway.onDpDataChange(data => {
@@ -1048,7 +1052,7 @@ export function Home() {
             </View>
             <View className={styles.panelMeta}>
               <View className={styles.versionBlock}>
-                <Text className={styles.versionLabel}>Panel v{panelVersion}</Text>
+                <Text className={styles.versionLabel}>产品 v{productVersion}</Text>
                 <Text className={styles.versionHint}>配置 {runtimeVersion}</Text>
               </View>
               <View className={styles.debugEntry} onClick={() => router.push('/debug')}>
@@ -1145,48 +1149,6 @@ export function Home() {
                 </View>
               </View>
             </View>
-            {!mock && sceneDiagnostics && (
-              <View className={styles.sceneDiagnostics}>
-                <View className={styles.sceneDiagnosticsHeader}>
-                  <Text className={styles.sceneDiagnosticsTitle}>场景资格诊断</Text>
-                  <Text
-                    className={`${styles.sceneDiagnosticsBadge} ${
-                      sceneDiagnostics.isShare || !sceneDiagnostics.homeAdmin
-                        ? styles.sceneDiagnosticsWarn
-                        : styles.sceneDiagnosticsOk
-                    }`}
-                  >
-                    {sceneDiagnostics.isShare
-                      ? '共享设备'
-                      : sceneDiagnostics.homeAdmin
-                        ? '家庭管理员'
-                        : '家庭成员'}
-                  </Text>
-                </View>
-                <Text className={styles.sceneDiagnosticsLine}>
-                  PID {sceneDiagnostics.productId || '未知'} · 产品版本{' '}
-                  {sceneDiagnostics.productVersion || '未知'}
-                </Text>
-                <Text className={styles.sceneDiagnosticsLine}>
-                  云端 DP {sceneDiagnostics.cloudSchemaCount} / 本地 DP {defaultSchema.length} · 家庭{' '}
-                  {sceneDiagnostics.homeName || sceneDiagnostics.homeId || '读取失败'}
-                </Text>
-                <Text className={styles.sceneDiagnosticsHint}>
-                  {sceneDiagnostics.isShare
-                    ? '当前是共享设备，请用设备原始绑定账号在所属家庭中创建自动化。'
-                    : !sceneDiagnostics.homeAdmin
-                      ? '当前账号不是家庭管理员，请切换管理员账号验证自动化候选设备。'
-                      : sceneDiagnostics.cloudSchemaCount < defaultSchema.length
-                        ? '设备实例仍是旧 DP 模型，请刷新产品版本；必要时删除后重新绑定网关。'
-                        : '账号归属和 DP 模型正常；若添加任务时仍看不到网关，请让涂鸦核查该产品实例的场景资格、品类限制和场景索引。'}
-                </Text>
-                {sceneDiagnostics.error && (
-                  <Text className={styles.sceneDiagnosticsError}>
-                    家庭信息读取失败：{sceneDiagnostics.error}
-                  </Text>
-                )}
-              </View>
-            )}
           </>
         )}
 
