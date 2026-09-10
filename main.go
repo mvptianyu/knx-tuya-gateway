@@ -13,6 +13,8 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -34,6 +36,7 @@ import (
 	"knx-tuya-gw/internal/discovery"
 	"knx-tuya-gw/internal/gatewaydps"
 	"knx-tuya-gw/internal/knxclient"
+	"knx-tuya-gw/internal/knxdebug"
 	"knx-tuya-gw/internal/logger"
 	"knx-tuya-gw/internal/mapping"
 	"knx-tuya-gw/internal/tuyamqtt"
@@ -243,13 +246,18 @@ func main() {
 
 	// 4. TuyaLink MQTT 优先连接，使 KNX 暂时不可用时网关仍能在 App 中保持在线。
 	var tuyaClient *tuyamqtt.Client
+	var debugController *knxdebug.Controller
 	if cfg.TuyaMQTT.Enabled {
 		tuyaClient, err = tuyamqtt.New(cfg.TuyaMQTT)
 		if err != nil {
 			logger.Errorf("create Tuya MQTT client failed: %v", err)
 			os.Exit(1)
 		}
+		debugController = knxdebug.New(client, tuyaClient, cfg.TuyaMQTT.GatewayNodeID)
 		tuyaClient.OnCommand(func(nodeID, dpCode string, value interface{}) error {
+			if debugController.Handles(dpCode) {
+				return debugController.Handle(dpCode, value)
+			}
 			if err := handleTuyaCmd(
 				client,
 				mappingStore.Current(),
@@ -300,6 +308,9 @@ func main() {
 	client.OnEvent(func(ev knxclient.Event) {
 		if commissioning != nil {
 			commissioning.Capture(ev)
+		}
+		if debugController != nil {
+			debugController.Capture(ev)
 		}
 		if ev.Command != "write" && ev.Command != "response" {
 			return // 忽略读请求
@@ -480,7 +491,28 @@ func fetchRuntimeBundleWithClient(
 	if int64(len(data)) > maxBytes {
 		return nil, fmt.Errorf("runtime bundle exceeds max_bytes=%d", maxBytes)
 	}
-	return data, nil
+	return unwrapRuntimeBundle(data, maxBytes)
+}
+
+func unwrapRuntimeBundle(data []byte, maxBytes int64) ([]byte, error) {
+	var wrapper struct {
+		Encoding string `json:"encoding"`
+		Content  string `json:"content"`
+	}
+	if err := json.Unmarshal(data, &wrapper); err != nil ||
+		wrapper.Encoding != "base64" ||
+		wrapper.Content == "" {
+		return data, nil
+	}
+
+	content, err := base64.StdEncoding.DecodeString(wrapper.Content)
+	if err != nil {
+		return nil, fmt.Errorf("decode remote runtime bundle base64: %w", err)
+	}
+	if int64(len(content)) > maxBytes {
+		return nil, fmt.Errorf("decoded runtime bundle exceeds max_bytes=%d", maxBytes)
+	}
+	return content, nil
 }
 
 func mappingVersion(m *mapping.Mapping) string {

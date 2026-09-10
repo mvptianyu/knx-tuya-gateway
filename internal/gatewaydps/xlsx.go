@@ -147,9 +147,22 @@ func templateValues(function Function) []cellValue {
 		unit = function.ValueSpec.Unit
 	}
 	note := "预留DP，待确认KNX映射"
+	if function.Category == "system" {
+		note = "网关内置KNX读写调试通道，请勿修改编号、code和类型"
+	}
 	if function.Mapped {
 		note = fmt.Sprintf("%s；控制%s；状态%s",
 			function.MappingName, function.KNXWriteGA, function.KNXStatusGA)
+	}
+	sceneRoles := make([]string, 0, 2)
+	if function.SceneCondition {
+		sceneRoles = append(sceneRoles, "条件")
+	}
+	if function.SceneAction {
+		sceneRoles = append(sceneRoles, "任务")
+	}
+	if len(sceneRoles) > 0 {
+		note += "；需在产品场景联动设置中启用：" + strings.Join(sceneRoles, "+")
 	}
 	return []cellValue{
 		{text: strconv.Itoa(function.DPID), numeric: true},

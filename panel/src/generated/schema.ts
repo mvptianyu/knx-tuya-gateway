@@ -890,5 +890,51 @@ export const defaultSchema = [
       "unit": "%"
     },
     "type": "obj"
+  },
+  {
+    "code": "knx_debug_request",
+    "id": 177,
+    "mode": "rw",
+    "name": "KNX调试请求",
+    "property": {
+      "type": "string"
+    },
+    "type": "obj"
+  },
+  {
+    "code": "knx_debug_trigger",
+    "id": 178,
+    "mode": "rw",
+    "name": "KNX调试触发",
+    "property": {
+      "type": "bool"
+    },
+    "type": "obj"
+  },
+  {
+    "code": "knx_debug_status",
+    "id": 179,
+    "mode": "ro",
+    "name": "KNX调试状态",
+    "property": {
+      "type": "enum",
+      "range": [
+        "idle",
+        "running",
+        "success",
+        "error"
+      ]
+    },
+    "type": "obj"
+  },
+  {
+    "code": "knx_debug_result",
+    "id": 180,
+    "mode": "ro",
+    "name": "KNX调试结果",
+    "property": {
+      "type": "string"
+    },
+    "type": "obj"
   }
 ] as const;

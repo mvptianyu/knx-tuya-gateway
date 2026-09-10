@@ -102,6 +102,28 @@ var categories = []category{
 	},
 }
 
+const maxBusinessFunctions = 76
+
+var systemFunctions = []Function{
+	{
+		DPID: 177, Code: "knx_debug_request", Name: "KNX调试请求",
+		Category: "system", Capability: "debug_request", Type: "string", Access: "rw",
+	},
+	{
+		DPID: 178, Code: "knx_debug_trigger", Name: "KNX调试触发",
+		Category: "system", Capability: "debug_trigger", Type: "bool", Access: "rw",
+	},
+	{
+		DPID: 179, Code: "knx_debug_status", Name: "KNX调试状态",
+		Category: "system", Capability: "debug_status", Type: "enum", Access: "ro",
+		EnumValues: []string{"idle", "running", "success", "error"},
+	},
+	{
+		DPID: 180, Code: "knx_debug_result", Name: "KNX调试结果",
+		Category: "system", Capability: "debug_result", Type: "string", Access: "ro",
+	},
+}
+
 type ValueSpec struct {
 	Min   int    `json:"min"`
 	Max   int    `json:"max"`
@@ -181,6 +203,14 @@ func Build(cfg config.GatewayDPPoolConfig, items []mapping.Item) (Artifacts, err
 			}
 		}
 	}
+	if len(plan.Functions) > maxBusinessFunctions {
+		return Artifacts{}, fmt.Errorf(
+			"gateway business DP pool allocates %d functions, exceeding fixed diagnostic DP boundary %d",
+			len(plan.Functions),
+			maxBusinessFunctions,
+		)
+	}
+	plan.Functions = append(plan.Functions, systemFunctions...)
 	plan.AllocatedFunctions = len(plan.Functions)
 	plan.ReservedFunctions = cfg.MaxFunctions - plan.AllocatedFunctions
 	if plan.ReservedFunctions < 0 {

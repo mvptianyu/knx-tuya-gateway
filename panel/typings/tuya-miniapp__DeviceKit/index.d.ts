@@ -568,6 +568,124 @@ declare namespace ty.device {
   }): void
 
   
+  export function connectBluetoothDevice(params: {
+    
+    devId: string
+    
+    timeoutMillis?: number
+    
+    souceType?: number
+    
+    connectType?: number
+    complete?: () => void
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function disconnectBluetoothDevice(params: {
+    
+    devId: string
+    
+    connectType?: number
+    complete?: () => void
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function activeDeviceExtendModule(params: {
+    
+    deviceId: string
+    
+    ssid?: string
+    
+    password?: string
+    
+    activeType: number
+    complete?: () => void
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function updateMeshProxyState(params: {
+    
+    deviceId: string
+    
+    isOpen: boolean
+    complete?: () => void
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function updateMeshRelayState(params: {
+    
+    deviceId: string
+    
+    isOpen: boolean
+    complete?: () => void
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function recordBleConnectEvent(params: {
+    
+    deviceId: string
+    
+    src: number
+    
+    actId: string
+    complete?: () => void
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
   export function startGWActivation(params: {
     
     gateway: Gateway
@@ -742,6 +860,62 @@ declare namespace ty.device {
   }): void
 
   
+  export function yuChannelSync(params?: {
+    complete?: () => void
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function yuChannelSyncSync(): null
+
+  
+  export function isYuDeviceOnline(params: {
+    
+    deviceId: string
+    
+    dps?: Record<string, {}>
+    complete?: () => void
+    success?: (params: boolean) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function isYuDeviceOnlineSync(device?: Device_7R0chZ): boolean
+
+  
+  export function syncDeviceMeshDps(params: {
+    
+    deviceId: string
+    
+    dps?: Record<string, {}>
+    complete?: () => void
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
   export function renameDeviceName(params: {
     
     deviceId: string
@@ -779,6 +953,42 @@ declare namespace ty.device {
 
   
   export function removeDevice(params: {
+    
+    deviceId: string
+    
+    dps?: Record<string, {}>
+    complete?: () => void
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function registerGateWaySubDeviceListener(params: {
+    
+    deviceId: string
+    
+    dps?: Record<string, {}>
+    complete?: () => void
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function unregisterGateWaySubDeviceListener(params: {
     
     deviceId: string
     
@@ -861,11 +1071,15 @@ declare namespace ty.device {
     complete?: () => void
     success?: (params: {
       
+      roomName?: string
+      
       schema: {}[]
       
       dps: Record<string, {}>
       
       attribute: number
+      
+      baseAttribute: number
       
       capability: number
       
@@ -895,13 +1109,15 @@ declare namespace ty.device {
       
       nodeId: string
       
-      parentId: string
+      parentId?: string
       
       category: string
       
-      standSchemaModel: {}
+      standSchemaModel?: {}
       
       productId: string
+      
+      productVer: string
       
       bizAttribute: number
       
@@ -931,11 +1147,78 @@ declare namespace ty.device {
       
       longitude: string
       
-      ip: string
+      ip?: string
       
       isVirtualDevice: boolean
       
       isZigbeeInstallCode: boolean
+      
+      protocolAttribute: number
+      
+      connectionStatus: number
+      
+      mac?: string
+      
+      bluetoothCapability?: string
+      
+      isTripartiteMatter: boolean
+      
+      isGW: boolean
+      
+      isSupportGroup: boolean
+      
+      isZigBeeSubDev: boolean
+      
+      cadv?: string
+      
+      isSupportOTA: boolean
+      
+      iconUrl: string
+      
+      hasWifi: boolean
+      
+      switchDp: number
+      
+      switchDps: number[]
+      
+      wifiEnableState: number
+      
+      configMetas: Record<string, {}>
+      
+      isMatter: boolean
+      
+      isSupportLink: boolean
+      
+      isSupportAppleHomeKit?: boolean
+      
+      attributeString: string
+      
+      extModuleType: number
+      
+      isRelayOpen: boolean
+      
+      isProxyOpen: boolean
+      
+      isSupportProxyAndRelay: boolean
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function getDeviceListByDevIds(params: {
+    
+    deviceIds: string[]
+    complete?: () => void
+    success?: (params: {
+      
+      deviceInfos: DeviceInfo[]
     }) => void
     fail?: (params: {
       errorMsg: string
@@ -951,6 +1234,8 @@ declare namespace ty.device {
   export function getProductInfo(params: {
     
     productId: string
+    
+    productVer?: string
     complete?: () => void
     success?: (params: {
       
@@ -1007,6 +1292,8 @@ declare namespace ty.device {
       configMetas: Record<string, {}>
       
       productVer: string
+      
+      attributeString: string
     }) => void
     fail?: (params: {
       errorMsg: string
@@ -1130,6 +1417,8 @@ declare namespace ty.device {
     deviceId: string
     
     dpIds: number[]
+    
+    queryType?: number
     complete?: () => void
     success?: (params: boolean) => void
     fail?: (params: {
@@ -1144,6 +1433,28 @@ declare namespace ty.device {
 
   
   export function publishMqttMessage(params: {
+    
+    message: Record<string, {}>
+    
+    deviceId: string
+    
+    protocol: number
+    
+    options: Record<string, {}>
+    complete?: () => void
+    success?: (params: boolean) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function sendMqttMessage(params: {
     
     message: Record<string, {}>
     
@@ -1444,11 +1755,74 @@ declare namespace ty.device {
   }): void
 
   
+  export function requestAdvancedCapability(params: {
+    
+    resId: string
+    
+    dpCodes: string[]
+    
+    type: string
+    
+    spaceId: number
+    complete?: () => void
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function dpTranslateAdvancedCapability(params: {
+    
+    resId: string
+    
+    dps: OriginalDps[]
+    
+    type: string
+    complete?: () => void
+    success?: (params: {
+      
+      advancedCapability: TranslateAdvancedCapability[]
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
   export function checkOTAUpdateInfo(params: {
     
     deviceId: string
     complete?: () => void
     success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function getOTAUpdateInfo(params: {
+    
+    deviceId: string
+    
+    extra?: DirectlyDeviceExtraParams[]
+    complete?: () => void
+    success?: (params: OTAUpdateInfo[]) => void
     fail?: (params: {
       errorMsg: string
       errorCode: string | number
@@ -1893,6 +2267,150 @@ declare namespace ty.device {
   }): void
 
   
+  export function getDeviceDetailConfiguration(params?: {
+    complete?: () => void
+    success?: (params: {
+      
+      customConfiguration: {}[]
+      
+      hasImplFunctionList: string[]
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function dispatchSubFunctionTouchEvent(params: {
+    
+    id: string
+    
+    name?: string
+    
+    type?: string
+    
+    optionType?: string
+    
+    from?: string
+    
+    order?: number
+    
+    isHide?: boolean
+    
+    data?: Record<string, {}>
+    complete?: () => void
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function dispatchDataResult(params: {
+    
+    id: string
+    
+    name?: string
+    
+    type?: string
+    
+    optionType?: string
+    
+    from?: string
+    
+    order?: number
+    
+    isHide?: boolean
+    
+    data?: Record<string, {}>
+    complete?: () => void
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function getSubFunctionShowState(params: {
+    
+    ids: string[]
+    
+    deviceId?: string
+    
+    groupId?: number
+    complete?: () => void
+    success?: (params: {
+      
+      showStateList: SubFunctionShowState[]
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function getSubFunctionExtShowData(params: {
+    
+    id: string
+    
+    data?: Record<string, {}>
+    complete?: () => void
+    success?: (params: {
+      
+      id: string
+      
+      data?: Record<string, {}>
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function getRemoteRebootTimers(params: {
+    
+    deviceId: string
+    complete?: () => void
+    success?: (params: {
+      
+      timers: RemoteRebootTimers[]
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
   export function openRecommendSceneDetail(params: {
     
     source: string
@@ -2126,7 +2644,7 @@ declare namespace ty.device {
       
       groupId: string
       
-      deviceList: DeviceInfo_dKTU5x[]
+      deviceList: DeviceInfo_M5cnTY[]
     }) => void
     fail?: (params: {
       errorMsg: string
@@ -2287,7 +2805,7 @@ declare namespace ty.device {
       
       dpName: {}
       
-      deviceList: DeviceInfo_dKTU5x[]
+      deviceList: DeviceInfo_M5cnTY[]
       
       localId: string
       
@@ -2455,9 +2973,42 @@ declare namespace ty.device {
   }): void
 
   
+  export function otaStatus(params: {
+    
+    deviceId: string
+    complete?: () => void
+    success?: (params: {
+      
+      status: number
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
   export function openOTAUpgrade(params: {
     
     deviceId: string
+    complete?: () => void
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function registerOTACompleted(params?: {
     complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
@@ -2576,6 +3127,25 @@ declare namespace ty.device {
     devId: string
     complete?: () => void
     success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+  }): void
+
+  
+  export function initVirtualDevice(params: {
+    
+    pid: string
+    complete?: () => void
+    success?: (params: {
+      
+      devId: string
+    }) => void
     fail?: (params: {
       errorMsg: string
       errorCode: string | number
@@ -2724,12 +3294,12 @@ declare namespace ty.device {
 
   
   export function onDeviceInfoUpdated(
-    listener: (params: Device_BKVfwx) => void
+    listener: (params: Device_7R0chZ) => void
   ): void
 
   
   export function offDeviceInfoUpdated(
-    listener: (params: Device_BKVfwx) => void
+    listener: (params: Device_7R0chZ) => void
   ): void
 
   
@@ -2753,10 +3323,70 @@ declare namespace ty.device {
   ): void
 
   
+  export function onSubDeviceDpUpdate(
+    listener: (params: Device_7R0chZ) => void
+  ): void
+
+  
+  export function offSubDeviceDpUpdate(
+    listener: (params: Device_7R0chZ) => void
+  ): void
+
+  
+  export function onSubDeviceRemoved(
+    listener: (params: Device_7R0chZ) => void
+  ): void
+
+  
+  export function offSubDeviceRemoved(
+    listener: (params: Device_7R0chZ) => void
+  ): void
+
+  
+  export function onSubDeviceAdded(
+    listener: (params: Device_7R0chZ) => void
+  ): void
+
+  
+  export function offSubDeviceAdded(
+    listener: (params: Device_7R0chZ) => void
+  ): void
+
+  
+  export function onSubDeviceInfoUpdate(
+    listener: (params: Device_7R0chZ) => void
+  ): void
+
+  
+  export function offSubDeviceInfoUpdate(
+    listener: (params: Device_7R0chZ) => void
+  ): void
+
+  
   export function onTimerUpdate(listener: (params: {}) => void): void
 
   
   export function offTimerUpdate(listener: (params: {}) => void): void
+
+  
+  export function onSubFunctionDataChange(
+    listener: (params: SubFunctionParams) => void
+  ): void
+
+  
+  export function offSubFunctionDataChange(
+    listener: (params: SubFunctionParams) => void
+  ): void
+
+  
+  export function onDispatchEvent(
+    listener: (params: SubFunctionParams) => void
+  ): void
+
+  
+  export function offDispatchEvent(
+    listener: (params: SubFunctionParams) => void
+  ): void
 
   
   export function onGroupInfoChange(
@@ -2799,6 +3429,16 @@ declare namespace ty.device {
   ): void
 
   
+  export function onOtaCompleted(
+    listener: (params: OtaCompletedParams) => void
+  ): void
+
+  
+  export function offOtaCompleted(
+    listener: (params: OtaCompletedParams) => void
+  ): void
+
+  
   export function onReceivedThingModelMessage(
     listener: (params: OnReceivedThingModelMessageBody) => void
   ): void
@@ -2818,13 +3458,24 @@ declare namespace ty.device {
     deviceId: string
   }
 
+  export type Device_7R0chZ = {
+    
+    deviceId: string
+    
+    dps?: Record<string, {}>
+  }
+
   export type DeviceInfo = {
+    
+    roomName?: string
     
     schema: {}[]
     
     dps: Record<string, {}>
     
     attribute: number
+    
+    baseAttribute: number
     
     capability: number
     
@@ -2854,13 +3505,15 @@ declare namespace ty.device {
     
     nodeId: string
     
-    parentId: string
+    parentId?: string
     
     category: string
     
-    standSchemaModel: {}
+    standSchemaModel?: {}
     
     productId: string
+    
+    productVer: string
     
     bizAttribute: number
     
@@ -2890,14 +3543,120 @@ declare namespace ty.device {
     
     longitude: string
     
-    ip: string
+    ip?: string
     
     isVirtualDevice: boolean
     
     isZigbeeInstallCode: boolean
+    
+    protocolAttribute: number
+    
+    connectionStatus: number
+    
+    mac?: string
+    
+    bluetoothCapability?: string
+    
+    isTripartiteMatter: boolean
+    
+    isGW: boolean
+    
+    isSupportGroup: boolean
+    
+    isZigBeeSubDev: boolean
+    
+    cadv?: string
+    
+    isSupportOTA: boolean
+    
+    iconUrl: string
+    
+    hasWifi: boolean
+    
+    switchDp: number
+    
+    switchDps: number[]
+    
+    wifiEnableState: number
+    
+    configMetas: Record<string, {}>
+    
+    isMatter: boolean
+    
+    isSupportLink: boolean
+    
+    isSupportAppleHomeKit?: boolean
+    
+    attributeString: string
+    
+    extModuleType: number
+    
+    isRelayOpen: boolean
+    
+    isProxyOpen: boolean
+    
+    isSupportProxyAndRelay: boolean
   }
 
   export type Object = {}
+
+  export type OriginalDps = {
+    
+    dpId: string
+    
+    dpCode: string
+    
+    dpValue: {}
+  }
+
+  export type TranslateAdvancedCapability = {
+    
+    dpCode: string
+    
+    translatedValue: string
+    
+    unit: string
+  }
+
+  export type DirectlyDeviceExtraParams = {
+    
+    type: string
+    
+    version: string
+  }
+
+  export type OTAUpdateInfo = {
+    
+    desc: string
+    
+    typeDesc: string
+    
+    upgradeStatus: number
+    
+    version: string
+    
+    currentVersion: string
+    
+    timeout: number
+    
+    upgradeType: number
+    
+    type: number
+    
+    devType: number
+    
+    controlType: boolean
+    
+    waitingDesc: string
+    
+    upgradingDesc: string
+    
+    canUpgrade: boolean
+    
+    remind: string
+    
+    upgradeMode: number
+  }
 
   export type TimerConfig = {
     
@@ -2969,7 +3728,27 @@ declare namespace ty.device {
     
     attributeSign: number
     
+    widgetUrl: string
+    
     originJson: Record<string, {}>
+  }
+
+  export type SubFunctionShowState = {
+    
+    id: string
+    
+    isShow: boolean
+  }
+
+  export type RemoteRebootTimers = {
+    
+    tid: string
+    
+    time: string
+    
+    loops: string
+    
+    status: boolean
   }
 
   export type SceneAction = {
@@ -3010,9 +3789,13 @@ declare namespace ty.device {
     
     defaultIconUrl?: string
     
+    actionDisplay?: string
+    
     actionDisplayNew?: Record<string, {}>
     
     status?: boolean
+    
+    relationGroup?: Record<string, {}>
   }
 
   export type Expr = {
@@ -3032,7 +3815,7 @@ declare namespace ty.device {
     cityName: string
   }
 
-  export type DeviceInfo_dKTU5x = {
+  export type DeviceInfo_M5cnTY = {
     
     schema: {}[]
     
@@ -3217,13 +4000,6 @@ declare namespace ty.device {
     onlineType: number
   }
 
-  export type Device_BKVfwx = {
-    
-    deviceId: string
-    
-    dps?: Record<string, {}>
-  }
-
   export type OnDeviceRemovedBody = {
     
     deviceId: string
@@ -3232,6 +4008,25 @@ declare namespace ty.device {
   export type MqttConnectStateResponse = {
     
     connectState: number
+  }
+
+  export type SubFunctionParams = {
+    
+    id: string
+    
+    name?: string
+    
+    type?: string
+    
+    optionType?: string
+    
+    from?: string
+    
+    order?: number
+    
+    isHide?: boolean
+    
+    data?: Record<string, {}>
   }
 
   export type GroupInfoResponse = {
@@ -3256,6 +4051,13 @@ declare namespace ty.device {
     groupId: string
     
     dps: {}
+  }
+
+  export type OtaCompletedParams = {
+    
+    deviceId: string
+    
+    result: number
   }
 
   export type OnReceivedThingModelMessageBody = {
@@ -3303,9 +4105,21 @@ declare namespace ty.device {
     onlineType: number
   }
 
+  export type DeviceListReq = {
+    
+    deviceIds: string[]
+  }
+
+  export type DeviceListResp = {
+    
+    deviceInfos: DeviceInfo[]
+  }
+
   export type Product = {
     
     productId: string
+    
+    productVer?: string
   }
 
   export type ProductInfo = {
@@ -3363,6 +4177,8 @@ declare namespace ty.device {
     configMetas: Record<string, {}>
     
     productVer: string
+    
+    attributeString: string
   }
 
   export type Mesh = {
@@ -3395,6 +4211,8 @@ declare namespace ty.device {
     deviceId: string
     
     dpIds: number[]
+    
+    queryType?: number
   }
 
   export type MqttMessage = {
@@ -3486,9 +4304,41 @@ declare namespace ty.device {
     topicList: string[]
   }
 
+  export type AdvancedCapabilityParams = {
+    
+    resId: string
+    
+    dpCodes: string[]
+    
+    type: string
+    
+    spaceId: number
+  }
+
+  export type TranslateAdvancedCapabilityParams = {
+    
+    resId: string
+    
+    dps: OriginalDps[]
+    
+    type: string
+  }
+
+  export type TranslateAdvancedCapabilityResponse = {
+    
+    advancedCapability: TranslateAdvancedCapability[]
+  }
+
   export type OTAUpdateInfoParams = {
     
     deviceId: string
+  }
+
+  export type GetOTAUpdateInfoParams = {
+    
+    deviceId: string
+    
+    extra?: DirectlyDeviceExtraParams[]
   }
 
   export type DeviceDetailParams = {
@@ -3652,7 +4502,7 @@ declare namespace ty.device {
     warningText: string
   }
 
-  export type Device_6dV67O = {
+  export type Device_EZVr01 = {
     
     deviceId: string
   }
@@ -3680,6 +4530,44 @@ declare namespace ty.device {
   export type GetSupportedThirdPartyServicesResponse = {
     
     services: ThirdPartyService[]
+  }
+
+  export type ConfigurationResponse = {
+    
+    customConfiguration: {}[]
+    
+    hasImplFunctionList: string[]
+  }
+
+  export type SubFunctionShowParams = {
+    
+    ids: string[]
+    
+    deviceId?: string
+    
+    groupId?: number
+  }
+
+  export type SubFunctionShowResponse = {
+    
+    showStateList: SubFunctionShowState[]
+  }
+
+  export type SubFunctionExtShowData = {
+    
+    id: string
+    
+    data?: Record<string, {}>
+  }
+
+  export type GetRemoteRebootTimersParams = {
+    
+    deviceId: string
+  }
+
+  export type GetRemoteRebootTimersResult = {
+    
+    timers: RemoteRebootTimers[]
   }
 
   export type UiComponent = {
@@ -3870,7 +4758,7 @@ declare namespace ty.device {
     
     groupId: string
     
-    deviceList: DeviceInfo_dKTU5x[]
+    deviceList: DeviceInfo_M5cnTY[]
   }
 
   export type DeviceNumResponse = {
@@ -3947,7 +4835,7 @@ declare namespace ty.device {
     
     dpName: {}
     
-    deviceList: DeviceInfo_dKTU5x[]
+    deviceList: DeviceInfo_M5cnTY[]
     
     localId: string
     
@@ -4004,6 +4892,11 @@ declare namespace ty.device {
   }
 
   export type CheckOTAUpgradeStatusResponse = {
+    
+    status: number
+  }
+
+  export type OtaStatusResponse = {
     
     status: number
   }
@@ -4096,6 +4989,16 @@ declare namespace ty.device {
   }
 
   export type UnSubscribeReceivedThingModelMessageParams = {
+    
+    devId: string
+  }
+
+  export type InitReq = {
+    
+    pid: string
+  }
+
+  export type InitRes = {
     
     devId: string
   }

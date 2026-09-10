@@ -1,12 +1,59 @@
 
 declare namespace ty {
   
+  export function getBackgroundFetchData(params?: {
+    
+    fetchType?: string
+    
+    fetchApiKeys?: string[]
+    success?: (params: {
+      
+      fetchedData: any
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function registerBackgroundFetchData(params: {
+    
+    fetchType?: string
+    
+    apiKey: string
+    
+    registerId: string
+    success?: (params: {
+      
+      fetchedData: {}
+      
+      timeStamp: number
+      
+      registerId: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
   export function nativeDisabled(params: {
     
     nativeDisabled: boolean
     
     pageId: string
-    complete?: () => void
     success?: (params: string) => void
     fail?: (params: {
       errorMsg: string
@@ -16,6 +63,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -29,8 +77,7 @@ declare namespace ty {
     
     pageId: string
     
-    params: Record<string, string>
-    complete?: () => void
+    params: any
     success?: (params: {}) => void
     fail?: (params: {
       errorMsg: string
@@ -40,14 +87,14 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function getPermissionConfig(params?: {
-    complete?: () => void
     success?: (params: {
       
-      result: Record<string, any>
+      result: any
     }) => void
     fail?: (params: {
       errorMsg: string
@@ -57,20 +104,20 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function getPermissionConfigSync(): {
     
-    result: Record<string, any>
+    result: any
   }
 
   
   export function openSetting(params?: {
-    complete?: () => void
     success?: (params: {
       
-      scope: Record<string, boolean>
+      scope: any
     }) => void
     fail?: (params: {
       errorMsg: string
@@ -80,13 +127,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function changeDebugMode(params: {
     
     isEnable: boolean
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -96,11 +143,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function openHelpCenter(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -110,13 +157,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function showTabBarRedDot(params: {
     
     index: number
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -126,13 +173,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function showTabBar(params: {
     
     animation: boolean
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -142,6 +189,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -154,7 +202,6 @@ declare namespace ty {
     backgroundColor: string
     
     borderStyle: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -164,6 +211,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -176,7 +224,6 @@ declare namespace ty {
     iconPath: string
     
     selectedIconPath: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -186,6 +233,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -194,7 +242,6 @@ declare namespace ty {
     index: number
     
     text: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -204,15 +251,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function removeTabBarBadge(params: {
     
     index: number
-    
-    text: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -222,13 +267,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function hideTabBarRedDot(params: {
     
     index: number
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -238,13 +283,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function hideTabBar(params: {
     
     animation: boolean
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -254,6 +299,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -261,10 +307,9 @@ declare namespace ty {
     
     api: string
     
-    data?: Record<string, any>
+    data?: any
     
     method?: HighwayMethod
-    complete?: () => void
     success?: (params: {
       
       thing_json_?: {}
@@ -279,13 +324,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function navigateBackMiniProgram(params?: {
     
-    extraData?: Record<string, any>
-    complete?: () => void
+    extraData?: any
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -295,11 +340,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function exitMiniProgram(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -309,20 +354,24 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function getLaunchOptions(params?: {
-    complete?: () => void
     success?: (params: {
       
       path: string
       
-      query: Record<string, any>
+      scene?: MiniAppScene
+      
+      query: any
       
       referrerInfo: ReferrerInfo
       
       apiCategory?: string
+      
+      extraQuery?: any
     }) => void
     fail?: (params: {
       errorMsg: string
@@ -332,6 +381,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -339,25 +389,32 @@ declare namespace ty {
     
     path: string
     
-    query: Record<string, any>
+    scene?: MiniAppScene
+    
+    query: any
     
     referrerInfo: ReferrerInfo
     
     apiCategory?: string
+    
+    extraQuery?: any
   }
 
   
   export function getEnterOptions(params?: {
-    complete?: () => void
     success?: (params: {
       
       path: string
       
-      query: Record<string, any>
+      scene?: MiniAppScene
+      
+      query: any
       
       referrerInfo: ReferrerInfo
       
       apiCategory?: string
+      
+      extraQuery?: any
     }) => void
     fail?: (params: {
       errorMsg: string
@@ -367,6 +424,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -374,18 +432,21 @@ declare namespace ty {
     
     path: string
     
-    query: Record<string, any>
+    scene?: MiniAppScene
+    
+    query: any
     
     referrerInfo: ReferrerInfo
     
     apiCategory?: string
+    
+    extraQuery?: any
   }
 
   
   export function setBoardTitle(params: {
     
     title: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -395,14 +456,67 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function setBoardTitleSync(boardBean?: BoardBean): null
 
   
-  export function getMenuButtonBoundingClientRect(params?: {
+  export function setBoardIcon(params: {
+    
+    icon: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
     complete?: () => void
+  }): void
+
+  
+  export function setBoardIconSync(boardIconBean?: BoardIconBean): null
+
+  
+  export function showBoardTitleIcon(params?: {
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function showBoardTitleIconSync(): null
+
+  
+  export function hideBoardTitleIcon(params?: {
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function hideBoardTitleIconSync(): null
+
+  
+  export function getMenuButtonBoundingClientRect(params?: {
     success?: (params: {
       
       width: number
@@ -425,6 +539,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -449,7 +564,6 @@ declare namespace ty {
     miniAppId: string
     
     miniAppVersion?: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -459,13 +573,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function login(params?: {
     
     timeout?: number
-    complete?: () => void
     success?: (params: {
       
       code: string
@@ -478,13 +592,15 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function setPageOrientation(params: {
     
     pageOrientation: string
-    complete?: () => void
+    
+    reverse?: boolean
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -494,11 +610,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function hideMenuButton(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -508,11 +624,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function showMenuButton(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -522,11 +638,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function showStatusBar(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -536,11 +652,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function hideStatusBar(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -550,11 +666,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function exitMiniWidget(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -564,13 +680,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function canOpenURL(params: {
     
     url: string
-    complete?: () => void
     success?: (params: {
       
       isCanOpen?: boolean
@@ -583,6 +699,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -595,7 +712,6 @@ declare namespace ty {
   export function openURL(params: {
     
     url: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -605,11 +721,221 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getAccountInfo(params?: {
+    success?: (params: {
+      
+      miniProgram: MiniProgramAccountInfo
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getAccountInfoSync(): {
+    
+    miniProgram: MiniProgramAccountInfo
+  }
+
+  
+  export function getMiniAppConfig(params?: {
+    success?: (params: {
+      
+      config: {}
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getMiniAppConfigSync(): {
+    
+    config: {}
+  }
+
+  
+  export function showBoard(params?: {
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function resetBoardMenus(params: {
+    
+    effectPage?: EffectPage
+    
+    menus: BoardItemBean[]
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function resetSystemMenus(params: {
+    
+    effectPage?: EffectPage
+    
+    menus: BoardItemBean[]
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function showRedBot(params: {
+    
+    effectPage?: EffectPage
+    
+    key: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function hiddenRedBot(params: {
+    
+    effectPage?: EffectPage
+    
+    key: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function hideRenderLoading(params?: {
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function setBackgroundImage(params: {
+    
+    imageUrl: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function setBackgroundColor(params: {
+    
+    color: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function reloadMiniProgram(params?: {
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function sendNotificationToNative(params: {
+    
+    eventId: string
+    
+    name: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
   export function showNavigationBarLoading(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -619,13 +945,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function setNavigationBarTitle(params: {
     
     title: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -635,6 +961,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -645,7 +972,6 @@ declare namespace ty {
     backgroundColor: string
     
     animation: NavigationBarColorAnimationInfo
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -655,11 +981,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function hideNavigationBarLoading(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -669,11 +995,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function hideHomeButton(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -683,6 +1009,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -691,7 +1018,10 @@ declare namespace ty {
     url: string
     
     type?: string
-    complete?: () => void
+    
+    topMargin?: number
+    
+    topMarginPercent?: number
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -701,13 +1031,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function navigateBack(params?: {
     
     delta?: number
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -717,15 +1047,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function redirectTo(params: {
     
     url: string
-    
-    type?: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -735,15 +1063,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function reLaunch(params: {
     
     url: string
-    
-    type?: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -753,15 +1079,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function switchTab(params: {
     
     url: string
-    
-    type?: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -771,20 +1095,18 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function extApiCanIUse(params: {
     
     api: string
-    
-    params?: Record<string, any>
-    complete?: () => void
     success?: (params: {
       
       result: boolean
     }) => void
-    failure?: (params: {
+    fail?: (params: {
       errorMsg: string
       errorCode: string | number
       innerError: {
@@ -792,10 +1114,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
-  export function extApiCanIUseSync(extApiBean?: ExtApiBean): {
+  export function extApiCanIUseSync(caniuseBean?: CanIUseBean): {
     
     result: boolean
   }
@@ -805,8 +1128,7 @@ declare namespace ty {
     
     api: string
     
-    params?: Record<string, any>
-    complete?: () => void
+    params?: any
     success?: (params: {
       
       data?: {}
@@ -819,6 +1141,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -829,7 +1152,6 @@ declare namespace ty {
 
   
   export function startPullDownRefresh(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -839,11 +1161,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function stopPullDownRefresh(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -853,6 +1175,23 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function widgetRemove(params?: {
+    
+    mode?: WidgetMode
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
@@ -863,6 +1202,22 @@ declare namespace ty {
   
   export function offNativeEvent(
     listener: (params: NativeUploadData) => void
+  ): void
+
+  
+  export function onExperienceRateEnd(
+    listener: (params: {
+      
+      source: string
+    }) => void
+  ): void
+
+  
+  export function offExperienceRateEnd(
+    listener: (params: {
+      
+      source: string
+    }) => void
   ): void
 
   export enum HighwayMethod {
@@ -891,11 +1246,22 @@ declare namespace ty {
     CONNECT = "CONNECT",
   }
 
+  export enum MiniAppScene {
+    
+    DEFAULT = 1000,
+
+    
+    RECENTLY_USED = 1001,
+
+    
+    URL_MAPPING = 1002,
+  }
+
   export type ReferrerInfo = {
     
     appId: string
     
-    extraData: Record<string, any>
+    extraData: any
   }
 
   export type BoardBean = {
@@ -903,9 +1269,48 @@ declare namespace ty {
     title: string
   }
 
+  export type BoardIconBean = {
+    
+    icon: string
+  }
+
   export type OpenURLBean = {
     
     url: string
+  }
+
+  export type MiniProgramAccountInfo = {
+    
+    appId: string
+    
+    envVersion: string
+    
+    version: string
+    
+    appName: string
+    
+    appIcon: string
+    
+    providerType: string
+  }
+
+  export enum EffectPage {
+    
+    current = "current",
+
+    
+    all = "all",
+  }
+
+  export type BoardItemBean = {
+    
+    key: string
+    
+    iconPath: string
+    
+    text: string
+    
+    isShow?: boolean
   }
 
   export type NavigationBarColorAnimationInfo = {
@@ -915,11 +1320,24 @@ declare namespace ty {
     timingFunc?: string
   }
 
+  export type CanIUseBean = {
+    
+    api: string
+  }
+
   export type ExtApiBean = {
     
     api: string
     
-    params?: Record<string, any>
+    params?: any
+  }
+
+  export enum WidgetMode {
+    
+    ONCE = "ONCE",
+
+    
+    FOREVER = "FOREVER",
   }
 
   export type NativeUploadData = {
@@ -930,10 +1348,8 @@ declare namespace ty {
     
     pageId: string
     
-    data: Record<string, Object>
+    data: any
   }
-
-  export type Object = {}
 
   export type NativeDisabledParam = {
     
@@ -952,17 +1368,19 @@ declare namespace ty {
     
     pageId: string
     
-    params: Record<string, string>
+    params: any
   }
+
+  export type Object = {}
 
   export type PermissionConfig = {
     
-    result: Record<string, any>
+    result: any
   }
 
   export type AuthSetting = {
     
-    scope: Record<string, boolean>
+    scope: any
   }
 
   export type DebugModeSetting = {
@@ -970,7 +1388,7 @@ declare namespace ty {
     isEnable: boolean
   }
 
-  export type RedDotParams = {
+  export type TabBarIndexBean = {
     
     index: number
   }
@@ -1013,7 +1431,7 @@ declare namespace ty {
     
     api: string
     
-    data?: Record<string, any>
+    data?: any
     
     method?: HighwayMethod
   }
@@ -1027,18 +1445,22 @@ declare namespace ty {
 
   export type BackMiniProgramBean = {
     
-    extraData?: Record<string, any>
+    extraData?: any
   }
 
   export type MiniAppOptions = {
     
     path: string
     
-    query: Record<string, any>
+    scene?: MiniAppScene
+    
+    query: any
     
     referrerInfo: ReferrerInfo
     
     apiCategory?: string
+    
+    extraQuery?: any
   }
 
   export type CapsuleButtonRectBean = {
@@ -1076,11 +1498,66 @@ declare namespace ty {
   export type OrientationBean = {
     
     pageOrientation: string
+    
+    reverse?: boolean
   }
 
   export type CanOpenURLResultBean = {
     
     isCanOpen?: boolean
+  }
+
+  export type AccountInfoResp = {
+    
+    miniProgram: MiniProgramAccountInfo
+  }
+
+  export type MiniAppConfigResp = {
+    
+    config: {}
+  }
+
+  export type BoardMenusBean = {
+    
+    effectPage?: EffectPage
+    
+    menus: BoardItemBean[]
+  }
+
+  export type RedBodReq = {
+    
+    effectPage?: EffectPage
+    
+    key: string
+  }
+
+  export type BackgroundImageBean = {
+    
+    imageUrl: string
+  }
+
+  export type BackgroundColorBean = {
+    
+    color: string
+  }
+
+  export type CreateReq = {
+    
+    managerId: string
+    
+    name: string
+  }
+
+  export type ObserverReq = {
+    
+    managerId: string
+  }
+
+  export type SendNotificationToNativeParams = {
+    
+    eventId: string
+    
+    name: string
   }
 
   export type NavigationBarLoadingParams = {
@@ -1102,11 +1579,30 @@ declare namespace ty {
     url: string
     
     type?: string
+    
+    topMargin?: number
+    
+    topMarginPercent?: number
   }
 
   export type BackRouteBean = {
     
     delta?: number
+  }
+
+  export type RedirectBean = {
+    
+    url: string
+  }
+
+  export type ReLaunchBean = {
+    
+    url: string
+  }
+
+  export type SwitchTabBean = {
+    
+    url: string
   }
 
   export type SuccessResult = {
@@ -1118,4 +1614,57 @@ declare namespace ty {
     
     data?: {}
   }
+
+  export type MiniWidgetRemoveBean = {
+    
+    mode?: WidgetMode
+  }
+
+  
+  interface NativeEventManager {
+    
+    offerListener(params: {
+      success?: (params: null) => void
+      fail?: (params: {
+        errorMsg: string
+        errorCode: string | number
+        innerError: {
+          errorCode: string | number
+          errorMsg: string
+        }
+      }) => void
+      complete?: () => void
+    }): void
+
+    
+    onListener(
+      listener: (params: {
+        
+        data: {}
+      }) => void
+    ): void
+
+    
+    offListener(
+      listener: (params: {
+        
+        data: {}
+      }) => void
+    ): void
+  }
+  
+  export function createNativeEventManager(params: {
+    
+    name: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): NativeEventManager
 }

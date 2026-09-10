@@ -26,7 +26,7 @@ cp .env.rpi.example .env.rpi
 地址为：
 
 ```text
-https://raw.giteeusercontent.com/mvptianyu/config-gateway/raw/master/knx/knx-mapping.json
+https://gitee.com/api/v5/repos/mvptianyu/config-gateway/contents/knx/knx-mapping.json?ref=master
 ```
 
 ## 2. 配置树莓派登录
@@ -82,8 +82,29 @@ sudo /opt/knx-tuya-gw/knx-tuya-gw \
 5. 执行 `make gateway ACTION=provision` 激活网关，并在 Smart Life 完成绑定。
 6. 执行 `make gateway ACTION=tuya-check` 检查 MQTT。
 
+注意：DP Excel 导入只负责创建功能点，不会导入场景联动权限。还需要在产品后台的场景
+联动设置中手工将灯、空调、新风 DP 开放为条件和任务，将温湿度 DP 开放为条件，将
+`scene_XX_trigger` 开放为任务，然后重新发布产品。“联动管理”只展示已经引用网关 DP
+的规则，没有创建过规则时显示为空是正常现象。
+
+若重新发布后在 Smart Life 的场景候选设备中仍完全看不到网关，进入网关面板的“场景”
+页检查“场景资格诊断”。依次排除共享设备、非家庭管理员账号、设备实例云端 DP 数少于
+本地 DP 数。三项都正常仍不可见时，记录 Device ID、PID、产品版本、云端 DP 数和页面
+截图，提交涂鸦工单检查产品实例的场景联动索引。不要通过修改 KNX 组地址或 MQTT 配置
+处理这个问题，它们不参与 Smart Life 场景候选设备的生成。
+
 同一 Device ID 不要同时运行两个 MQTT 客户端，否则连接会互相顶掉。TuyaLink MQTT 只能
 收发已发布 DP，不能动态创建或修改产品功能。
+
+当前平台文件共 80 个 DP：`101-176` 为业务槽位，`177-180` 为固定 KNX
+诊断通道。升级已有产品时，至少要补充并发布下面四个功能点，编号、code、类型和权限必须一致：
+
+| DP ID | code | 类型 | 权限 | 说明 |
+| --- | --- | --- | --- | --- |
+| 177 | `knx_debug_request` | string | rw | JSON 调试请求 |
+| 178 | `knx_debug_trigger` | bool | rw | 翻转后执行请求 |
+| 179 | `knx_debug_status` | enum | ro | `idle,running,success,error` |
+| 180 | `knx_debug_result` | string | ro | 精简总线结果 |
 
 ## 5. 测试和部署
 
@@ -119,7 +140,23 @@ make panel ACTION=build
 
 在 Tuya MiniApp IDE 导入 `panel/`，选择设备面板/Ray，关联网关 PID 和测试设备。完成真机
 调试后上传体验版、提交审核并发布，再把面板关联到网关产品。平台需要将
-`raw.giteeusercontent.com` 加入请求合法域名。更多细节见 `panel/README.md`。
+`gitee.com` 加入请求合法域名。该地址使用 Gitee Contents API，程序会自动解码返回的
+Base64 内容，从而避开 Raw 地址对 Smart Life Referer 的防盗链限制。更多细节见
+`panel/README.md`。
+
+### Smart Life 面板内 KNX 调试
+
+Smart Life 的设备“属性/设置”页属于宿主 App 与产品平台能力，不能由面板代码任意插入
+原生菜单。项目因此把入口放在自定义面板首页顶部：显示 Panel 版本和远程配置版本，并提供
+“总线调试”入口。
+
+使用前先在平台发布上述四个诊断 DP，再部署新版网关服务并上传新版面板。调试页支持填写
+组地址、DPT 和写入值；读取时 DPT 可留空，写入时布尔填 `true/false`、数值填 `23.5`、
+文本或枚举可填 `auto`。结果会展示目标地址报文、原始十六进制值和解码值。
+
+该入口通过 TuyaLink DP/MQTT 中转，不要求手机与树莓派处于同一局域网，也不写入现场确认
+CSV。若读取显示 `no matching bus response observed`，通常表示该 GA 不可读、真实状态地址
+不同，或 KNX 执行器没有配置 GroupValueResponse。
 
 ## 7. KNX 清单审核
 

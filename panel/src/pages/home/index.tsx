@@ -1,10 +1,24 @@
 import React from 'react';
-import { ScrollView, Text, View, device, showToast } from '@ray-js/ray';
+import {
+  ScrollView,
+  Text,
+  View,
+  device,
+  home,
+  openCreateTapToRunScene,
+  openDevManualAndSmart,
+  router,
+  showToast,
+} from '@ray-js/ray';
 import { hooks, useActions, useProps } from '@ray-js/panel-sdk';
 import { devices as sdmDevices } from '@/devices';
 import { panelDevices } from '@/generated/manifest';
 import { defaultSchema } from '@/generated/schema';
-import { runtimeBundleURL } from '@/generated/runtime';
+import {
+  runtimeBundlePollSeconds,
+  runtimeBundleURL,
+  panelVersion,
+} from '@/generated/runtime';
 import { mockDevices, mockDpState } from '@/mock/devices';
 import {
   AirConditionerCard,
@@ -96,6 +110,19 @@ type ThingModelInfo = {
   productVersion: string;
   services: unknown[];
   extensions: Record<string, unknown>;
+};
+
+type SceneDiagnostics = {
+  deviceId: string;
+  productId: string;
+  productVersion: string;
+  cloudSchemaCount: number;
+  isShare: boolean;
+  homeId: string;
+  homeName: string;
+  homeAdmin: boolean;
+  homeRole: number;
+  error?: string;
 };
 
 type RuntimeMapping = {
@@ -291,6 +318,29 @@ function decodeRuntimeBinary(payload: unknown): string | undefined {
   return undefined;
 }
 
+function decodeBase64Utf8(value: string) {
+  const alphabet =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+  const normalized = value.replace(/\s+/g, '').replace(/=+$/, '');
+  const bytes: number[] = [];
+  let buffer = 0;
+  let bits = 0;
+
+  for (const character of normalized) {
+    const index = alphabet.indexOf(character);
+    if (index < 0) {
+      throw new Error('Gitee 配置内容不是有效的 Base64');
+    }
+    buffer = (buffer << 6) | index;
+    bits += 6;
+    if (bits >= 8) {
+      bits -= 8;
+      bytes.push((buffer >> bits) & 0xff);
+    }
+  }
+  return decodeUtf8(new Uint8Array(bytes));
+}
+
 function parseRuntimeBundle(payload: unknown, depth = 0): RuntimeBundle {
   if (depth > 4) {
     throw new Error('运行时配置包装层级过深');
@@ -312,6 +362,15 @@ function parseRuntimeBundle(payload: unknown, depth = 0): RuntimeBundle {
   }
 
   const candidate = payload as Record<string, unknown>;
+  if (
+    candidate.encoding === 'base64' &&
+    typeof candidate.content === 'string'
+  ) {
+    return parseRuntimeBundle(
+      decodeBase64Utf8(candidate.content),
+      depth + 1
+    );
+  }
   if ('schema_version' in candidate || 'mappings' in candidate) {
     const schemaVersion = Number(candidate.schema_version);
     const version =
@@ -645,6 +704,9 @@ export function Home() {
   const [runtimeSchemaByCode, setRuntimeSchemaByCode] = React.useState<
     Record<string, DpSchema | undefined>
   >({});
+  const [runtimeVersion, setRuntimeVersion] = React.useState('内置配置');
+  const [sceneDiagnostics, setSceneDiagnostics] =
+    React.useState<SceneDiagnostics | null>(null);
 
   const devices = mock ? mockDevices : runtimeDevices || panelDevices;
   const schemaByCode = mock
@@ -674,14 +736,6 @@ export function Home() {
       : categoryDevices.filter(device => (device.room || '全屋') === activeRoom);
   const climate = devices.find(device => device.category === 'climate_sensor');
   const freshAir = devices.find(device => device.category === 'fresh_air');
-  const homeScene = devices.find(
-    device => device.category === 'scene' && device.name.includes('回家')
-  );
-  const awayScene = devices.find(
-    device =>
-      device.category === 'scene' &&
-      (device.name.includes('离家') || device.name.includes('外出'))
-  );
   const temperature = climate
     ? readNumber(state, climate, 'temperature', 0)
     : undefined;
@@ -717,6 +771,8 @@ export function Home() {
     const devInfo = sdmDevices.gateway.getDevInfo() as unknown as {
       devId?: string;
       productId?: string;
+      productVer?: string;
+      isShare?: boolean;
       schema?: unknown[];
       dps?: Record<string, unknown>;
     };
@@ -728,6 +784,40 @@ export function Home() {
       productVersion: (devInfo as { productVer?: string })?.productVer,
       cloudSchemaCount: devInfo?.schema?.length || 0,
       localDpCount: defaultSchema.length,
+      isShare: devInfo?.isShare,
+    });
+    home.getCurrentHomeInfo({
+      success: home => {
+        const diagnostics: SceneDiagnostics = {
+          deviceId: devInfo?.devId || '',
+          productId: devInfo?.productId || '',
+          productVersion: devInfo?.productVer || '',
+          cloudSchemaCount: devInfo?.schema?.length || 0,
+          isShare: Boolean(devInfo?.isShare),
+          homeId: home.homeId,
+          homeName: home.homeName,
+          homeAdmin: home.admin,
+          homeRole: home.role,
+        };
+        setSceneDiagnostics(diagnostics);
+        console.info('Panel scene eligibility diagnostics', diagnostics);
+      },
+      fail: error => {
+        const diagnostics: SceneDiagnostics = {
+          deviceId: devInfo?.devId || '',
+          productId: devInfo?.productId || '',
+          productVersion: devInfo?.productVer || '',
+          cloudSchemaCount: devInfo?.schema?.length || 0,
+          isShare: Boolean(devInfo?.isShare),
+          homeId: '',
+          homeName: '',
+          homeAdmin: false,
+          homeRole: -1,
+          error: getErrorMessage(error),
+        };
+        setSceneDiagnostics(diagnostics);
+        console.warn('Panel home diagnostics failed', error);
+      },
     });
     if (devInfo?.devId) {
       ensureThingModelReady(devInfo.devId).catch(error => {
@@ -751,6 +841,7 @@ export function Home() {
           if (!active) return;
           setRuntimeDevices(result.devices);
           setRuntimeSchemaByCode(result.schemas);
+          setRuntimeVersion(result.version);
           console.info('Panel runtime bundle loaded', {
             version: result.version,
             deviceCount: result.devices.length,
@@ -762,7 +853,7 @@ export function Home() {
         });
     };
     load();
-    const timer = setInterval(load, 60000);
+    const timer = setInterval(load, runtimeBundlePollSeconds * 1000);
     return () => {
       active = false;
       clearInterval(timer);
@@ -823,6 +914,37 @@ export function Home() {
     }
   };
 
+  const openSceneCreator = async () => {
+    if (mock) {
+      showToast({ title: '真机中将打开 Smart Life 场景编辑器' });
+      return;
+    }
+    try {
+      await openCreateTapToRunScene();
+    } catch (error) {
+      console.warn('Open Smart Life scene creator failed', error);
+      showToast({ title: `打开场景创建失败：${getErrorMessage(error)}` });
+    }
+  };
+
+  const openSceneManager = async () => {
+    if (mock) {
+      showToast({ title: '真机中将打开网关联动管理' });
+      return;
+    }
+    const devId = sdmDevices.gateway.getDevInfo()?.devId;
+    if (!devId) {
+      showToast({ title: '未获取到网关 Device ID' });
+      return;
+    }
+    try {
+      await openDevManualAndSmart({ devId });
+    } catch (error) {
+      console.warn('Open Smart Life scene manager failed', error);
+      showToast({ title: `打开联动管理失败：${getErrorMessage(error)}` });
+    }
+  };
+
   const renderDevice = (device: PanelDevice) => {
     const props = {
       key: device.id,
@@ -846,36 +968,6 @@ export function Home() {
         return null;
     }
   };
-
-  const renderSceneShortcut = (
-    label: string,
-    scene: PanelDevice | undefined,
-    tone: 'home' | 'away'
-  ) => (
-    <View
-      className={`${styles.sceneShortcut} ${styles[tone]} ${
-        scene ? '' : styles.sceneShortcutDisabled
-      }`}
-      onClick={() => {
-        if (!scene) {
-          showToast({ title: `请先配置${label}场景映射` });
-          return;
-        }
-        void setDp(scene.dps.trigger, true);
-      }}
-    >
-      <View className={styles.sceneShortcutIcon}>
-        <Text>{tone === 'home' ? '归' : '行'}</Text>
-      </View>
-      <View className={styles.sceneShortcutText}>
-        <Text className={styles.sceneShortcutName}>{label}</Text>
-        <Text className={styles.sceneShortcutHint}>
-          {scene ? '轻触立即执行' : '待配置场景 DP'}
-        </Text>
-      </View>
-      <Text className={styles.sceneShortcutArrow}>›</Text>
-    </View>
-  );
 
   const renderDeviceSection = (
     category: Exclude<CategoryId, 'overview'>,
@@ -954,9 +1046,21 @@ export function Home() {
                 </Text>
               </View>
             </View>
-            <View className={styles.sceneShortcuts}>
-              {renderSceneShortcut('回家模式', homeScene, 'home')}
-              {renderSceneShortcut('离家模式', awayScene, 'away')}
+            <View className={styles.panelMeta}>
+              <View className={styles.versionBlock}>
+                <Text className={styles.versionLabel}>Panel v{panelVersion}</Text>
+                <Text className={styles.versionHint}>配置 {runtimeVersion}</Text>
+              </View>
+              <View className={styles.debugEntry} onClick={() => router.push('/debug')}>
+                <View className={styles.debugEntryIcon}>
+                  <Text>KNX</Text>
+                </View>
+                <View className={styles.debugEntryText}>
+                  <Text className={styles.debugEntryTitle}>总线调试</Text>
+                  <Text className={styles.debugEntryHint}>读写组地址</Text>
+                </View>
+                <Text className={styles.debugEntryArrow}>›</Text>
+              </View>
             </View>
             <View className={styles.heroGlow} />
             <View className={styles.heroOrbit} />
@@ -1007,6 +1111,83 @@ export function Home() {
               ))}
             </View>
           </RoomScroller>
+        )}
+
+        {activeCategory === 'scene' && (
+          <>
+            <View className={styles.sceneTools}>
+              <View
+                className={`${styles.sceneTool} ${styles.sceneToolPrimary}`}
+                onClick={() => {
+                  void openSceneCreator();
+                }}
+              >
+                <View className={styles.sceneToolIcon}>
+                  <Text>+</Text>
+                </View>
+                <View className={styles.sceneToolText}>
+                  <Text className={styles.sceneToolTitle}>新建组合场景</Text>
+                  <Text className={styles.sceneToolHint}>从树莓派网关选择已开放的 DP</Text>
+                </View>
+              </View>
+              <View
+                className={styles.sceneTool}
+                onClick={() => {
+                  void openSceneManager();
+                }}
+              >
+                <View className={`${styles.sceneToolIcon} ${styles.sceneToolIconManage}`}>
+                  <Text>联</Text>
+                </View>
+                <View className={styles.sceneToolText}>
+                  <Text className={styles.sceneToolTitle}>联动管理</Text>
+                  <Text className={styles.sceneToolHint}>仅显示已经引用网关的规则</Text>
+                </View>
+              </View>
+            </View>
+            {!mock && sceneDiagnostics && (
+              <View className={styles.sceneDiagnostics}>
+                <View className={styles.sceneDiagnosticsHeader}>
+                  <Text className={styles.sceneDiagnosticsTitle}>场景资格诊断</Text>
+                  <Text
+                    className={`${styles.sceneDiagnosticsBadge} ${
+                      sceneDiagnostics.isShare || !sceneDiagnostics.homeAdmin
+                        ? styles.sceneDiagnosticsWarn
+                        : styles.sceneDiagnosticsOk
+                    }`}
+                  >
+                    {sceneDiagnostics.isShare
+                      ? '共享设备'
+                      : sceneDiagnostics.homeAdmin
+                        ? '家庭管理员'
+                        : '家庭成员'}
+                  </Text>
+                </View>
+                <Text className={styles.sceneDiagnosticsLine}>
+                  PID {sceneDiagnostics.productId || '未知'} · 产品版本{' '}
+                  {sceneDiagnostics.productVersion || '未知'}
+                </Text>
+                <Text className={styles.sceneDiagnosticsLine}>
+                  云端 DP {sceneDiagnostics.cloudSchemaCount} / 本地 DP {defaultSchema.length} · 家庭{' '}
+                  {sceneDiagnostics.homeName || sceneDiagnostics.homeId || '读取失败'}
+                </Text>
+                <Text className={styles.sceneDiagnosticsHint}>
+                  {sceneDiagnostics.isShare
+                    ? '当前是共享设备，请用设备原始绑定账号在所属家庭中创建自动化。'
+                    : !sceneDiagnostics.homeAdmin
+                      ? '当前账号不是家庭管理员，请切换管理员账号验证自动化候选设备。'
+                      : sceneDiagnostics.cloudSchemaCount < defaultSchema.length
+                        ? '设备实例仍是旧 DP 模型，请刷新产品版本；必要时删除后重新绑定网关。'
+                        : '账号归属和 DP 模型正常；若添加任务时仍看不到网关，请让涂鸦核查该产品实例的场景资格、品类限制和场景索引。'}
+                </Text>
+                {sceneDiagnostics.error && (
+                  <Text className={styles.sceneDiagnosticsError}>
+                    家庭信息读取失败：{sceneDiagnostics.error}
+                  </Text>
+                )}
+              </View>
+            )}
+          </>
         )}
 
         {visibleDevices.length > 0 ? (

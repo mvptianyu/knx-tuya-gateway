@@ -6,4 +6,9 @@ export const routes: Routes = [
     path: '/pages/home/index',
     name: 'Home',
   },
+  {
+    route: '/debug',
+    path: '/pages/debug/index',
+    name: 'KNXDebug',
+  },
 ];

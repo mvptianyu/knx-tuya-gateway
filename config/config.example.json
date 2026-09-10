@@ -48,7 +48,7 @@
   "runtime_update": {
     "enabled": true,
     "watch_interval_seconds": 60,
-    "remote_url": "https://raw.giteeusercontent.com/mvptianyu/config-gateway/raw/master/knx/knx-mapping.json",
+    "remote_url": "https://gitee.com/api/v5/repos/mvptianyu/config-gateway/contents/knx/knx-mapping.json?ref=master",
     "remote_poll_seconds": 300,
     "max_bytes": 2097152
   },

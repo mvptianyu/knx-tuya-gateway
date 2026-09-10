@@ -1,16 +1,346 @@
 
 declare namespace ty {
   
+  export function getAIAssistantHistory(params: {
+    
+    size: number
+    
+    primaryId: number
+    
+    requestId: string
+    
+    type: string
+    
+    channel: string
+    success?: (params: {
+      
+      data: string
+      
+      channel: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getAIAssistantGroupHistory(params: {
+    
+    size: number
+    
+    primaryId: number
+    
+    channels?: string[]
+    
+    sessions?: string[]
+    success?: (params: {
+      
+      size: number
+      
+      list: GroupHistoryResItem[][]
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function deleteAIAssistant(params: {
+    
+    primaryId: number
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function sendAIAssistant(params: {
+    
+    block: string
+    
+    options: string
+    
+    type: string
+    
+    requestId?: string
+    
+    channel?: string
+    
+    session?: string
+    success?: (params: {
+      
+      requestId: string
+      
+      primaryId: number
+      
+      code: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function terminateAIAssistant(params: {
+    
+    requestId: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function createAIAssistant(params?: {
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getAIAssistantRequestId(params?: {
+    success?: (params: {
+      
+      requestId: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getAIAssistantRequestIdSync(): {
+    
+    requestId: string
+  }
+
+  
+  export function insertAIAssistantInfo(params: {
+    
+    requestId: string
+    
+    type: string
+    
+    data: string
+    
+    code: string
+    
+    message: string
+    
+    source: number
+    
+    channel?: string
+    
+    session?: string
+    
+    options?: string
+    success?: (params: {
+      
+      primaryId: number
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function updateAIAssistantInfo(params: {
+    
+    primaryId: number
+    
+    data?: string
+    
+    code?: string
+    
+    message?: string
+    
+    source?: string
+    
+    type: string
+    
+    channel?: string
+    
+    session?: string
+    
+    options?: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getSpeechDisplayType(params?: {
+    success?: (params: {
+      
+      type: number
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function disableAIAssistant(params?: {
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function enableAIAssistant(params?: {
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function deleteAIAssistantDbSource(params: {
+    
+    homeId: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getSingleAIAssistant(params: {
+    
+    primaryId: number
+    success?: (params: {
+      
+      primaryId: number
+      
+      requestId: string
+      
+      source: number
+      
+      data: string
+      
+      code: number
+      
+      type: string
+      
+      createTime: number
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function isSupportOldSpeech(params?: {
+    success?: (params: boolean) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
   export function apiRequestByAtop(params: {
     
     api: string
     
     version?: string
     
-    postData: Record<string, any>
+    postData: any
     
-    extData?: Record<string, any>
-    complete?: () => void
+    extData?: any
     success?: (params: {
       
       thing_json_?: {}
@@ -25,6 +355,38 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function apiRequestByHighwayRestful(params: {
+    
+    host?: string
+    
+    api: string
+    
+    header?: any
+    
+    query?: any
+    
+    body?: any
+    
+    method?: HighwayMethod
+    success?: (params: {
+      
+      result: {}
+      
+      api: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
@@ -32,8 +394,7 @@ declare namespace ty {
     
     eventId: string
     
-    event: Record<string, {}>
-    complete?: () => void
+    event: any
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -43,6 +404,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -52,10 +414,9 @@ declare namespace ty {
     
     identifier: string
     
-    attributes: Record<string, {}>
+    attributes: any
     
-    infos: Record<string, {}>
-    complete?: () => void
+    infos: any
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -65,6 +426,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -74,10 +436,9 @@ declare namespace ty {
     
     identifier: string
     
-    attributes: Record<string, {}>
+    attributes: any
     
-    infos: Record<string, {}>
-    complete?: () => void
+    infos: any
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -87,6 +448,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -96,10 +458,9 @@ declare namespace ty {
     
     identifier: string
     
-    attributes: Record<string, {}>
+    attributes: any
     
-    infos: Record<string, {}>
-    complete?: () => void
+    infos: any
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -109,17 +470,59 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function eventLink(params: {
+    
+    linkIndex: number
+    
+    linkId: string
+    
+    params: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function performanceEvent(params?: {
+    
+    launchData?: string
+    
+    perfData?: any
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
   export function getAppInfo(params?: {
-    complete?: () => void
     success?: (params: {
       
       serverTimestamp: number
+      
       appVersion: string
+      
       language: string
+      
       countryCode: string
+      
       regionCode: string
       
       appName: string
@@ -131,6 +534,10 @@ declare namespace ty {
       appBundleId: string
       
       appScheme: string
+      
+      appId: string
+      
+      clientId?: string
     }) => void
     fail?: (params: {
       errorMsg: string
@@ -140,11 +547,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function getCurrentWifiSSID(params?: {
-    complete?: () => void
     success?: (params: {
       
       ssId: string
@@ -157,11 +564,180 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getNGConfigByKeys(params: {
+    
+    keys: string[]
+    success?: (params: {
+      
+      config: any
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getConfigByKeys(params: {
+    
+    keys: string[]
+    success?: (params: {
+      
+      config: any
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getThirdPartyServiceInfo(params: {
+    
+    types: number[]
+    success?: (params: ThirdPartyServiceInfo[]) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function openThirdPartyMiniProgram(params: {
+    
+    type?: ThirdPartyMiniProgramType
+    
+    params: any
+    success?: (params: {
+      
+      data: any
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getCloudEnv(params?: {
+    success?: (params: {
+      
+      env?: CloudEnvType
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function isMiniAppAvailable(params?: {
+    success?: (params: {
+      
+      availalble: boolean
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getAppTabInfo(params?: {
+    success?: (params: {
+      
+      tabInfo: AppTabInfo[]
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getAppPrivacyPolicyInfo(params?: {
+    success?: (params: {
+      
+      privacyTitle: string
+      
+      privacyContent: string
+      
+      privacyTxt: string
+      
+      privacyUrl: string
+      
+      userAgreementTxt: string
+      
+      userAgreementUrl: string
+      
+      isSupportChildrenPrivacy: boolean
+      
+      childrenPrivacyTxt: string
+      
+      childrenPrivacyUrl: string
+      
+      isSupportThirdPartyPrivacy: boolean
+      
+      thirdPartyPrivacyTxt: string
+      
+      thirdPartyPrivacyUrl: string
+      
+      agreePrivacyPolicy: string
+      
+      disAgreePrivacyPolicy: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
   export function openCountrySelectPage(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -171,11 +747,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function getIconfontInfo(params?: {
-    complete?: () => void
     success?: (params: {
       
       nameMap: string
@@ -188,6 +764,59 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function iapPay(params: {
+    
+    orderID: string
+    
+    productID: string
+    
+    preFlowCode: string
+    
+    subscription?: number
+    
+    billing_mode?: number
+    
+    previous_sku?: string
+    success?: (params: {
+      
+      orderID?: string
+      
+      token?: string
+      
+      products?: string
+      
+      paymentType?: number
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function iapType(params?: {
+    success?: (params: {
+      
+      data: number
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
@@ -202,7 +831,6 @@ declare namespace ty {
     delayTime?: number
     
     pollMaxCount?: number
-    complete?: () => void
     success?: (params: {
       
       result: string
@@ -215,11 +843,87 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function uploadVideo(params: {
+    
+    filePath: string
+    
+    bizType: string
+    
+    contentType?: string
+    success?: (params: {
+      
+      result: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function createLiveActivity(params: {
+    
+    activityType?: any
+    
+    activityId: string
+    
+    data: any
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getDebugLangCodes(params?: {
+    success?: (params: {
+      
+      codes: string[]
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function setDebugLangCodes(params: {
+    
+    codes: string[]
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
   export function getLangKey(params?: {
-    complete?: () => void
     success?: (params: {
       
       langKey: string
@@ -232,11 +936,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function getLangContent(params?: {
-    complete?: () => void
     success?: (params: {
       
       langContent: {}
@@ -249,6 +953,54 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function registerPageRefreshListener(params?: {
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getNgRawData(params: {
+    
+    rawKey: string
+    success?: (params: {
+      
+      rawData: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getOnlineCustomerService(params?: {
+    success?: (params: { url: string }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
@@ -260,8 +1012,7 @@ declare namespace ty {
     
     panelUiInfoBean?: PanelUiInfoBean
     
-    initialProps?: Record<string, {}>
-    complete?: () => void
+    initialProps?: any
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -271,6 +1022,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -280,8 +1032,7 @@ declare namespace ty {
     
     extraInfo?: PanelExtraParams
     
-    initialProps?: Record<string, {}>
-    complete?: () => void
+    initialProps?: any
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -291,6 +1042,27 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function backToHomeAndOpenPanel(params: {
+    
+    deviceId: string
+    
+    extraInfo?: PanelExtraParams
+    
+    initialProps?: any
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
@@ -299,7 +1071,6 @@ declare namespace ty {
     deviceId: string
     
     extraInfo?: PanelExtraParams
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -309,6 +1080,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -317,7 +1089,6 @@ declare namespace ty {
     url: string
     
     title?: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -327,6 +1098,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -335,7 +1107,6 @@ declare namespace ty {
     scope: string
     
     requestCode?: number
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -345,6 +1116,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -353,7 +1125,6 @@ declare namespace ty {
     scope: string
     
     requestCode?: number
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -363,6 +1134,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -371,7 +1143,6 @@ declare namespace ty {
     eventName: string
     
     event?: {}
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -381,13 +1152,15 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
-  export function router(params: {
+  export function setActivityResult(params: {
     
-    url: string
-    complete?: () => void
+    resultCode: number
+    
+    data?: any
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -397,13 +1170,71 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
-  export function canIUseRouter(params: {
+  export function openThirdApp(params: {
+    
+    uriString: string
+    
+    packageName: string
+    success?: (params: { isCanOpen?: boolean }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function openThirdAppSync(params?: ThirdAppBean): {
+    isCanOpen?: boolean
+  }
+
+  
+  export function openUrlForceDefaultBrowser(params: {
     
     url: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
     complete?: () => void
+  }): void
+
+  
+  export function getIapInfo(params?: {
+    success?: (params: {
+      
+      iapType?: number
+      
+      googleIapEnableUserChoice?: boolean
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function iapPayReady(params: {
+    
+    subscription: number
     success?: (params: {
       
       result: boolean
@@ -416,15 +1247,21 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
-  export function goDeviceDetail(params: {
+  export function pay(params: {
     
-    deviceId: string
+    order_id: string
     
-    groupId?: string
-    complete?: () => void
+    product_id: string
+    
+    subscription?: number
+    
+    billing_mode?: number
+    
+    previous_sku?: string
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -434,6 +1271,113 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function addOrderStatusListener(params: {
+    
+    order_id: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function removeOrderStatusListener(params: {
+    
+    order_id: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function queryProductDetails(params: {
+    
+    productList: ProductSub[]
+    success?: (params: {
+      
+      productSubsMap?: any
+      
+      productInAppMap?: any
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function router(params: {
+    
+    url: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function canIUseRouter(params: {
+    
+    url: string
+    success?: (params: {
+      
+      result: boolean
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function goDeviceDetail(params: {
+    
+    deviceId: string
+    
+    groupId?: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
@@ -452,7 +1396,6 @@ declare namespace ty {
     data: {}[]
     
     enableFilter?: boolean
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -462,18 +1405,19 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function share(params: {
     
-    type: string
+    type?: ShareInfoType
     
     title: string
     
     message: string
     
-    contentType: string
+    contentType?: ShareInfoContentType
     
     recipients?: string[]
     
@@ -484,7 +1428,6 @@ declare namespace ty {
     webPageUrl?: string
     
     miniProgramInfo?: MiniProgramInfo
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -494,11 +1437,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function getShareChannelList(params?: {
-    complete?: () => void
     success?: (params: {
       
       shareChannelList: string[]
@@ -511,11 +1454,122 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function showSharePanel(params: {
+    
+    contentType: number
+    success?: (params: {
+      
+      platformType: string
+      
+      installed: boolean
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function shareDirectly(params: {
+    
+    platformType: string
+    
+    localIdentifier: string
+    
+    contentType: number
+    success?: (params: {
+      
+      code: number
+      
+      msg: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function isSupportedShortcut(params?: {
+    success?: (params: {
+      
+      isSupported: boolean
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function isAssociatedShortcut(params: {
+    
+    sceneId: string
+    
+    name?: string
+    success?: (params: {
+      
+      isAssociated: boolean
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function handleShortcut(params: {
+    
+    type: number
+    
+    sceneId: string
+    
+    name: string
+    
+    iconUrl?: string
+    success?: (params: {
+      
+      operationStep: number
+      
+      operationStatus: boolean
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
   export function getUserInfo(params?: {
-    complete?: () => void
     success?: (params: {
       
       nickName: string
@@ -524,9 +1578,17 @@ declare namespace ty {
       
       phoneCode: string
       
+      regionCode: string
+      
       isTemporaryUser: boolean
+      
+      timezoneId: string
+      
+      regFrom: number
+      
+      tempUnit: number
     }) => void
-    failure?: (params: {
+    fail?: (params: {
       errorMsg: string
       errorCode: string | number
       innerError: {
@@ -534,6 +1596,26 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function changeDiyHomeStatus(params: {
+    
+    isOn: boolean
+    success?: (params: {
+      
+      isSuccess: boolean
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
@@ -546,7 +1628,6 @@ declare namespace ty {
     maxFileSize?: number
     
     path: string
-    complete?: () => void
     success?: (params: {
       
       path: string
@@ -559,6 +1640,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -567,7 +1649,6 @@ declare namespace ty {
     path: string
     
     orientation: number
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -577,6 +1658,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -587,7 +1669,6 @@ declare namespace ty {
     encryptKey: string
     
     orientation: number
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -597,7 +1678,163 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
+
+  
+  export function takeScreenShot(params?: {
+    success?: (params: {
+      
+      path: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getWebSocketStatus(params?: {
+    success?: (params: {
+      
+      status: number
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getWebSocketStatusSync(): {
+    
+    status: number
+  }
+
+  
+  export function bindWechat(params?: {
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function isSupportWechat(params?: {
+    success?: (params: {
+      
+      isSupport: boolean
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function gotoWechatMiniApp(params: {
+    
+    miniAppId: string
+    
+    path: string
+    
+    miniProgramType: number
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function isCalling(params?: {
+    success?: (params: {
+      
+      result: boolean
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function canLaunchCall(params?: {
+    success?: (params: {
+      
+      result: boolean
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function launchCall(params: {
+    
+    targetId: string
+    
+    timeout: number
+    
+    extra: any
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function onAIAssistantChange(
+    listener: (params: ReceiveBean) => void
+  ): void
+
+  
+  export function offAIAssistantChange(
+    listener: (params: ReceiveBean) => void
+  ): void
 
   
   export function onCountrySelectResult(
@@ -620,6 +1857,14 @@ declare namespace ty {
   ): void
 
   
+  export function onPageRefresh(listener: (params: RefreshParams) => void): void
+
+  
+  export function offPageRefresh(
+    listener: (params: RefreshParams) => void
+  ): void
+
+  
   export function onReceiveMessage(
     listener: (params: EventChannelMessageParams) => void
   ): void
@@ -627,6 +1872,26 @@ declare namespace ty {
   
   export function offReceiveMessage(
     listener: (params: EventChannelMessageParams) => void
+  ): void
+
+  
+  export function onOrderStatusListener(
+    listener: (params: OrderStatusEvent) => void
+  ): void
+
+  
+  export function offOrderStatusListener(
+    listener: (params: OrderStatusEvent) => void
+  ): void
+
+  
+  export function onUserSelectedAlternativeBilling(
+    listener: (params: UserSelectedAlternativeEvent) => void
+  ): void
+
+  
+  export function offUserSelectedAlternativeBilling(
+    listener: (params: UserSelectedAlternativeEvent) => void
   ): void
 
   
@@ -645,6 +1910,105 @@ declare namespace ty {
     listener: (params: RouterResultResponse) => void
   ): void
 
+  
+  export function onFrontPageClose(
+    listener: (params: PageCloseResponse) => void
+  ): void
+
+  
+  export function offFrontPageClose(
+    listener: (params: PageCloseResponse) => void
+  ): void
+
+  
+  export function onWebSocketStatusChange(
+    listener: (params: StatusBean) => void
+  ): void
+
+  
+  export function offWebSocketStatusChange(
+    listener: (params: StatusBean) => void
+  ): void
+
+  export type GroupHistoryResItem = {
+    
+    primaryId: number
+    
+    requestId: string
+    
+    source: number
+    
+    code: string
+    
+    message: string
+    
+    type: string
+    
+    createTime: number
+    
+    homeId: string
+    
+    channel: string
+    
+    session: string
+    
+    options: string
+    
+    data: string
+  }
+
+  export enum HighwayMethod {
+    
+    GET = "GET",
+
+    
+    POST = "POST",
+
+    
+    PUT = "PUT",
+
+    
+    DELETE = "DELETE",
+  }
+
+  export type ThirdPartyServiceInfo = {
+    
+    available: boolean
+    
+    isAppInstalled: boolean
+    
+    appInstallUrl: string
+    
+    type: number
+  }
+
+  export enum ThirdPartyMiniProgramType {
+    
+    QQ = 1,
+
+    
+    Wechat = 2,
+  }
+
+  export enum CloudEnvType {
+    
+    Public = 0,
+
+    
+    Private = 1,
+  }
+
+  export type AppTabInfo = {
+    
+    key: string
+    
+    text: string
+    
+    iconPath: string
+    
+    selectedIconPath: string
+  }
+
   export type PanelUiInfoBean = {
     
     phase?: string
@@ -659,7 +2023,7 @@ declare namespace ty {
     
     name?: string
     
-    uiConfig?: Record<string, {}>
+    uiConfig?: any
     
     rnFind?: boolean
     
@@ -683,9 +2047,54 @@ declare namespace ty {
     uiPhase?: string
   }
 
+  export type ThirdAppBean = {
+    
+    uriString: string
+    
+    packageName: string
+  }
+
+  export type ProductSub = {
+    
+    productId: string
+    
+    subscription: number
+  }
+
   export type TimeConfig = {
     
     background: string
+  }
+
+  export enum ShareInfoType {
+    
+    WeChat = "WeChat",
+
+    
+    Message = "Message",
+
+    
+    Email = "Email",
+
+    
+    More = "More",
+  }
+
+  export enum ShareInfoContentType {
+    
+    Text = "text",
+
+    
+    Image = "image",
+
+    
+    File = "file",
+
+    
+    Web = "web",
+
+    
+    MiniProgram = "miniProgram",
   }
 
   export type MiniProgramInfo = {
@@ -701,6 +2110,11 @@ declare namespace ty {
     miniProgramType: number
     
     webPageUrl: string
+  }
+
+  export type ReceiveBean = {
+    
+    data: string
   }
 
   export type CountrySelectResultResponse = {
@@ -719,11 +2133,36 @@ declare namespace ty {
     progress: number
   }
 
+  export type RefreshParams = {
+    
+    key: string
+    
+    data?: any
+  }
+
   export type EventChannelMessageParams = {
     
     eventId: string
     
     event?: {}
+  }
+
+  export type OrderStatusEvent = {
+    
+    order_id: string
+    
+    resultCode: number
+    
+    errorCode?: number
+    
+    errorMsg?: string
+  }
+
+  export type UserSelectedAlternativeEvent = {
+    
+    externalTransactionToken?: string
+    
+    products?: string
   }
 
   export type RouterEvent = {
@@ -740,11 +2179,61 @@ declare namespace ty {
     data?: string
   }
 
+  export type PageCloseResponse = {
+    
+    from?: string
+  }
+
+  export type StatusBean = {
+    
+    status: number
+  }
+
+  export type ApiRequestByAtopParams = {
+    
+    api: string
+    
+    version?: string
+    
+    postData: any
+    
+    extData?: any
+  }
+
+  export type ApiRequestByAtopResponse = {
+    
+    thing_json_?: {}
+    
+    data: string
+  }
+
+  export type HighwayReq = {
+    
+    host?: string
+    
+    api: string
+    
+    header?: any
+    
+    query?: any
+    
+    body?: any
+    
+    method?: HighwayMethod
+  }
+
+  export type HighwayResp = {
+    
+    result: {}
+    
+    api: string
+  }
+
   export type EventBean = {
     
     eventId: string
     
-    event: Record<string, {}>
+    event: any
   }
 
   export type TrackEventBean = {
@@ -753,17 +2242,62 @@ declare namespace ty {
     
     identifier: string
     
-    attributes: Record<string, {}>
+    attributes: any
     
-    infos: Record<string, {}>
+    infos: any
+  }
+
+  export type EventLinkBean = {
+    
+    linkIndex: number
+    
+    linkId: string
+    
+    params: string
+  }
+
+  export type PerformanceBean = {
+    
+    launchData?: string
+    
+    perfData?: any
+  }
+
+  export type ManagerContext = {
+    
+    managerId: number
+    
+    homeId: string
+    
+    sampleRate: number
+    
+    channels: number
+    
+    codec: string
+    
+    options: string
+  }
+
+  export type AsrManagerContext = {
+    
+    managerId: number
+  }
+
+  export type Active = {
+    
+    isActive: boolean
   }
 
   export type AppInfoBean = {
     
     serverTimestamp: number
+    
     appVersion: string
+    
     language: string
+    
     countryCode: string
+    
     regionCode: string
     
     appName: string
@@ -775,6 +2309,10 @@ declare namespace ty {
     appBundleId: string
     
     appScheme: string
+    
+    appId: string
+    
+    clientId?: string
   }
 
   export type SystemWirelessInfoBean = {
@@ -782,9 +2320,118 @@ declare namespace ty {
     ssId: string
   }
 
+  export type NGConfigParams = {
+    
+    keys: string[]
+  }
+
+  export type ConfigResponse = {
+    
+    config: any
+  }
+
+  export type ConfigParams = {
+    
+    keys: string[]
+  }
+
+  export type ThirdPartyServiceParams = {
+    
+    types: number[]
+  }
+
+  export type ThirdPartyMiniProgramParams = {
+    
+    type?: ThirdPartyMiniProgramType
+    
+    params: any
+  }
+
+  export type ThirdPartyMiniProgramResult = {
+    
+    data: any
+  }
+
+  export type CloudEnvResult = {
+    
+    env?: CloudEnvType
+  }
+
+  export type MiniAppAvailableRes = {
+    
+    availalble: boolean
+  }
+
+  export type AppTabInfoResponse = {
+    
+    tabInfo: AppTabInfo[]
+  }
+
+  export type AppPrivacyPolicyInfoResponse = {
+    
+    privacyTitle: string
+    
+    privacyContent: string
+    
+    privacyTxt: string
+    
+    privacyUrl: string
+    
+    userAgreementTxt: string
+    
+    userAgreementUrl: string
+    
+    isSupportChildrenPrivacy: boolean
+    
+    childrenPrivacyTxt: string
+    
+    childrenPrivacyUrl: string
+    
+    isSupportThirdPartyPrivacy: boolean
+    
+    thirdPartyPrivacyTxt: string
+    
+    thirdPartyPrivacyUrl: string
+    
+    agreePrivacyPolicy: string
+    
+    disAgreePrivacyPolicy: string
+  }
+
   export type IconfontInfoBean = {
     
     nameMap: string
+  }
+
+  export type PaymentParam = {
+    
+    orderID: string
+    
+    productID: string
+    
+    preFlowCode: string
+    
+    subscription?: number
+    
+    billing_mode?: number
+    
+    previous_sku?: string
+  }
+
+  export type PaymentResponse = {
+    
+    orderID?: string
+    
+    token?: string
+    
+    products?: string
+    
+    paymentType?: number
+  }
+
+  export type TypeResponse = {
+    
+    data: number
   }
 
   export type UploadParams = {
@@ -805,6 +2452,29 @@ declare namespace ty {
     result: string
   }
 
+  export type VideoUploadParams = {
+    
+    filePath: string
+    
+    bizType: string
+    
+    contentType?: string
+  }
+
+  export type RequestModel = {
+    
+    activityType?: any
+    
+    activityId: string
+    
+    data: any
+  }
+
+  export type DebugCodes = {
+    
+    codes: string[]
+  }
+
   export type LocalConstants = {
     
     langKey: string
@@ -822,6 +2492,72 @@ declare namespace ty {
     langContent: {}
   }
 
+  export type ManagerContext_1FzYPO = {
+    
+    managerId: number
+    
+    tag: string
+  }
+
+  export type ManagerReqContext = {
+    
+    managerId: number
+    
+    message: string
+  }
+
+  export type ConnectBean = {
+    
+    taskId: string
+    
+    host: string
+    
+    port: number
+    
+    userName?: string
+    
+    password?: string
+    
+    clientId: string
+    
+    ssl: boolean
+  }
+
+  export type ClientBean = {
+    
+    taskId: string
+  }
+
+  export type SubscribeBean = {
+    
+    taskId: string
+    
+    topic: string
+  }
+
+  export type PublishBean = {
+    
+    taskId: string
+    
+    topic: string
+    
+    message: string
+  }
+
+  export type NGRequestBean = {
+    
+    rawKey: string
+  }
+
+  export type NGResponseBean = {
+    
+    rawData: string
+  }
+
+  export type CustomerServiceRes = {
+    url: string
+  }
+
   export type PanelBean = {
     
     deviceId: string
@@ -830,7 +2566,7 @@ declare namespace ty {
     
     panelUiInfoBean?: PanelUiInfoBean
     
-    initialProps?: Record<string, {}>
+    initialProps?: any
   }
 
   export type PanelParams = {
@@ -839,7 +2575,7 @@ declare namespace ty {
     
     extraInfo?: PanelExtraParams
     
-    initialProps?: Record<string, {}>
+    initialProps?: any
   }
 
   export type PreloadPanelParams = {
@@ -882,6 +2618,97 @@ declare namespace ty {
     eventId: string
   }
 
+  export type ActivityResultBean = {
+    
+    resultCode: number
+    
+    data?: any
+  }
+
+  export type CanOpenThirdAppBean = {
+    isCanOpen?: boolean
+  }
+
+  export type OpenDefaultBrowserUrlBean = {
+    
+    url: string
+  }
+
+  export type PricePhase = {
+    
+    price: string
+    
+    priceCode: string
+    
+    priceAmountMicros: number
+    
+    billingPeriod: string
+    
+    recurrenceMode: number
+    
+    billingCycleCount: number
+  }
+
+  export type SubscriptionOfferDetail = {
+    
+    basePlanId: string
+    
+    offerId: string
+    
+    offerToken: string
+    
+    offerTags: string[]
+    
+    pricingPhases: PricePhase[]
+  }
+
+  export type PayInfoBean = {
+    
+    iapType?: number
+    
+    googleIapEnableUserChoice?: boolean
+  }
+
+  export type iapPayReadyReq = {
+    
+    subscription: number
+  }
+
+  export type iapPayReadyResp = {
+    
+    result: boolean
+  }
+
+  export type payReq = {
+    
+    order_id: string
+    
+    product_id: string
+    
+    subscription?: number
+    
+    billing_mode?: number
+    
+    previous_sku?: string
+  }
+
+  export type OrderReq = {
+    
+    order_id: string
+  }
+
+  export type ProductQueryReq = {
+    
+    productList: ProductSub[]
+  }
+
+  export type ProductQueryResp = {
+    
+    productSubsMap?: any
+    
+    productInAppMap?: any
+  }
+
   export type Object = {}
 
   export type RouterBean = {
@@ -920,13 +2747,13 @@ declare namespace ty {
 
   export type ShareInformationBean = {
     
-    type: string
+    type?: ShareInfoType
     
     title: string
     
     message: string
     
-    contentType: string
+    contentType?: ShareInfoContentType
     
     recipients?: string[]
     
@@ -944,6 +2771,69 @@ declare namespace ty {
     shareChannelList: string[]
   }
 
+  export type SharePanelParams = {
+    
+    contentType: number
+  }
+
+  export type SharePanelResponse = {
+    
+    platformType: string
+    
+    installed: boolean
+  }
+
+  export type ShareContentParams = {
+    
+    platformType: string
+    
+    localIdentifier: string
+    
+    contentType: number
+  }
+
+  export type ShareContentResponse = {
+    
+    code: number
+    
+    msg: string
+  }
+
+  export type SiriEnabledResponse = {
+    
+    isSupported: boolean
+  }
+
+  export type ShortcutAssociatedParams = {
+    
+    sceneId: string
+    
+    name?: string
+  }
+
+  export type ShortcutAssociatedResponse = {
+    
+    isAssociated: boolean
+  }
+
+  export type ShortcutParams = {
+    
+    type: number
+    
+    sceneId: string
+    
+    name: string
+    
+    iconUrl?: string
+  }
+
+  export type ShortcutOperationResponse = {
+    
+    operationStep: number
+    
+    operationStatus: boolean
+  }
+
   export type UserInfoResult = {
     
     nickName: string
@@ -952,7 +2842,25 @@ declare namespace ty {
     
     phoneCode: string
     
+    regionCode: string
+    
     isTemporaryUser: boolean
+    
+    timezoneId: string
+    
+    regFrom: number
+    
+    tempUnit: number
+  }
+
+  export type DiyHomeStatusParam = {
+    
+    isOn: boolean
+  }
+
+  export type ChangeDiyHomeResponse = {
+    
+    isSuccess: boolean
   }
 
   export type ImageResizeBean = {
@@ -987,11 +2895,60 @@ declare namespace ty {
     orientation: number
   }
 
-  
-  interface RegisterChannelTask {
+  export type ScreenShotResultBean = {
     
-    unRegisterChannel(params: {
+    path: string
+  }
+
+  export type WechatSupport = {
+    
+    isSupport: boolean
+  }
+
+  export type MiniApp = {
+    
+    miniAppId: string
+    
+    path: string
+    
+    miniProgramType: number
+  }
+
+  export type Result = {
+    
+    result: boolean
+  }
+
+  export type Call = {
+    
+    targetId: string
+    
+    timeout: number
+    
+    extra: any
+  }
+
+  
+  interface AsrListenerManager {
+    
+    getAsrActive(params: {
+      success?: (params: {
+        
+        isActive: boolean
+      }) => void
+      fail?: (params: {
+        errorMsg: string
+        errorCode: string | number
+        innerError: {
+          errorCode: string | number
+          errorMsg: string
+        }
+      }) => void
       complete?: () => void
+    }): void
+
+    
+    stopDetect(params: {
       success?: (params: null) => void
       fail?: (params: {
         errorMsg: string
@@ -1001,12 +2958,59 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
-  }
-  export function registerChannel(params: {
+
     
-    eventName: string
-    complete?: () => void
+    startDetect(params: {
+      success?: (params: null) => void
+      fail?: (params: {
+        errorMsg: string
+        errorCode: string | number
+        innerError: {
+          errorCode: string | number
+          errorMsg: string
+        }
+      }) => void
+      complete?: () => void
+    }): void
+
+    
+    onDetect(
+      listener: (params: {
+        
+        state: number
+        
+        text: string
+        
+        errorCode: number
+      }) => void
+    ): void
+
+    
+    offDetect(
+      listener: (params: {
+        
+        state: number
+        
+        text: string
+        
+        errorCode: number
+      }) => void
+    ): void
+  }
+  
+  export function getAsrListenerManager(params: {
+    
+    homeId: string
+    
+    sampleRate: number
+    
+    channels: number
+    
+    codec: string
+    
+    options: string
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -1016,5 +3020,262 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
-  }): RegisterChannelTask
+    complete?: () => void
+  }): AsrListenerManager
+
+  
+  interface LogManager {
+    
+    log(params: {
+      
+      message: string
+      success?: (params: null) => void
+      fail?: (params: {
+        errorMsg: string
+        errorCode: string | number
+        innerError: {
+          errorCode: string | number
+          errorMsg: string
+        }
+      }) => void
+      complete?: () => void
+    }): void
+
+    
+    error(params: {
+      
+      message: string
+      success?: (params: null) => void
+      fail?: (params: {
+        errorMsg: string
+        errorCode: string | number
+        innerError: {
+          errorCode: string | number
+          errorMsg: string
+        }
+      }) => void
+      complete?: () => void
+    }): void
+
+    
+    feedback(params: {
+      
+      message: string
+      success?: (params: null) => void
+      fail?: (params: {
+        errorMsg: string
+        errorCode: string | number
+        innerError: {
+          errorCode: string | number
+          errorMsg: string
+        }
+      }) => void
+      complete?: () => void
+    }): void
+
+    
+    debug(params: {
+      
+      message: string
+      success?: (params: null) => void
+      fail?: (params: {
+        errorMsg: string
+        errorCode: string | number
+        innerError: {
+          errorCode: string | number
+          errorMsg: string
+        }
+      }) => void
+      complete?: () => void
+    }): void
+  }
+  
+  export function getLogManager(params: {
+    
+    tag: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): LogManager
+
+  
+  interface MQTTClientTask {
+    
+    connect(params: {
+      
+      host: string
+      
+      port: number
+      
+      userName?: string
+      
+      password?: string
+      
+      clientId: string
+      
+      ssl: boolean
+      success?: (params: null) => void
+      fail?: (params: {
+        errorMsg: string
+        errorCode: string | number
+        innerError: {
+          errorCode: string | number
+          errorMsg: string
+        }
+      }) => void
+      complete?: () => void
+    }): void
+
+    
+    disconnect(params: {
+      success?: (params: null) => void
+      fail?: (params: {
+        errorMsg: string
+        errorCode: string | number
+        innerError: {
+          errorCode: string | number
+          errorMsg: string
+        }
+      }) => void
+      complete?: () => void
+    }): void
+
+    
+    subscribe(params: {
+      
+      topic: string
+      success?: (params: null) => void
+      fail?: (params: {
+        errorMsg: string
+        errorCode: string | number
+        innerError: {
+          errorCode: string | number
+          errorMsg: string
+        }
+      }) => void
+      complete?: () => void
+    }): void
+
+    
+    unsubscribe(params: {
+      
+      topic: string
+      success?: (params: null) => void
+      fail?: (params: {
+        errorMsg: string
+        errorCode: string | number
+        innerError: {
+          errorCode: string | number
+          errorMsg: string
+        }
+      }) => void
+      complete?: () => void
+    }): void
+
+    
+    publish(params: {
+      
+      topic: string
+      
+      message: string
+      success?: (params: null) => void
+      fail?: (params: {
+        errorMsg: string
+        errorCode: string | number
+        innerError: {
+          errorCode: string | number
+          errorMsg: string
+        }
+      }) => void
+      complete?: () => void
+    }): void
+
+    
+    onMessage(
+      listener: (params: {
+        
+        topic: string
+        
+        message: string
+      }) => void
+    ): void
+
+    
+    offMessage(
+      listener: (params: {
+        
+        topic: string
+        
+        message: string
+      }) => void
+    ): void
+
+    
+    onStateChange(
+      listener: (params: {
+        
+        state: number
+      }) => void
+    ): void
+
+    
+    offStateChange(
+      listener: (params: {
+        
+        state: number
+      }) => void
+    ): void
+  }
+  
+  export function createMQTTClient(params?: {
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): MQTTClientTask
+
+  
+  interface EventChannelManager {
+    
+    unRegisterChannel(params: {
+      success?: (params: null) => void
+      fail?: (params: {
+        errorMsg: string
+        errorCode: string | number
+        innerError: {
+          errorCode: string | number
+          errorMsg: string
+        }
+      }) => void
+      complete?: () => void
+    }): void
+  }
+  
+  export function registerChannel(params: {
+    
+    eventName: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): EventChannelManager
 }

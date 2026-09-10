@@ -2,9 +2,8 @@
 declare namespace ty {
   
   export function stopAccelerometer(params?: {
-    complete?: () => void
     success?: (params: null) => void
-    failure?: (params: {
+    fail?: (params: {
       errorMsg: string
       errorCode: string | number
       innerError: {
@@ -12,15 +11,15 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function startAccelerometer(params?: {
     
     interval?: AccelerometerInterval
-    complete?: () => void
     success?: (params: null) => void
-    failure?: (params: {
+    fail?: (params: {
       errorMsg: string
       errorCode: string | number
       innerError: {
@@ -28,13 +27,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function getAudioFileDuration(params: {
     
     path: string
-    complete?: () => void
     success?: (params: {
       
       duration: number
@@ -47,13 +46,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
-  export function authorize(params: {
+  export function authorize(params?: {
     
-    scope: string
-    complete?: () => void
+    scope?: ScopeBean
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -63,13 +62,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
-  export function authorizeStatus(params: {
+  export function authorizeStatus(params?: {
     
-    scope: string
-    complete?: () => void
+    scope?: ScopeBean
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -79,6 +78,76 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getSetting(params?: {
+    success?: (params: {
+      
+      authSetting: any
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function authorizePolicy(params: {
+    
+    type: string
+    
+    version: string
+    
+    status: number
+    success?: (params: {
+      
+      agreed: boolean
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function authorizePolicyStatus(params: {
+    
+    type: string
+    success?: (params: {
+      
+      title: string
+      
+      agreementName: string
+      
+      agreementDesc: string
+      
+      link: string
+      
+      version: string
+      
+      sign: number
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
@@ -86,16 +155,19 @@ declare namespace ty {
     
     appId?: string
     
+    aiPtChannel?: string
+    
+    aiPtType?: string
+    
     path?: string
     
     position?: string
     
-    extraData?: Record<string, any>
+    extraData?: any
     
     envVersion?: string
     
     shortLink?: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -105,13 +177,108 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function canIUse(params: {
+    
+    schema: string
+    success?: (params: {
+      
+      result: boolean
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function canIUseSync(schemaBean?: SchemaBean): {
+    
+    result: boolean
+  }
+
+  
+  export function fetchVideoThumbnails(params: {
+    
+    filePath: string
+    
+    startTime: number
+    
+    endTime: number
+    
+    thumbnailCount: number
+    
+    thumbnailWidth: number
+    
+    thumbnailHeight: number
+    success?: (params: {
+      
+      thumbnailsPath?: string[]
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function clearVideoThumbnails(params: {
+    
+    videoName: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function clipVideo(params: {
+    
+    filePath: string
+    
+    startTime: number
+    
+    endTime: number
+    
+    level: number
+    success?: (params: {
+      
+      videoClipPath?: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
   export function startCompass(params?: {
-    complete?: () => void
     success?: (params: null) => void
-    failure?: (params: {
+    fail?: (params: {
       errorMsg: string
       errorCode: string | number
       innerError: {
@@ -119,13 +286,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function stopCompass(params?: {
-    complete?: () => void
     success?: (params: null) => void
-    failure?: (params: {
+    fail?: (params: {
       errorMsg: string
       errorCode: string | number
       innerError: {
@@ -133,15 +300,15 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function startDeviceMotionListening(params?: {
     
     interval?: DeviceMotionInterval
-    complete?: () => void
     success?: (params: null) => void
-    failure?: (params: {
+    fail?: (params: {
       errorMsg: string
       errorCode: string | number
       innerError: {
@@ -149,13 +316,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function stopDeviceMotionListening(params?: {
-    complete?: () => void
     success?: (params: null) => void
-    failure?: (params: {
+    fail?: (params: {
       errorMsg: string
       errorCode: string | number
       innerError: {
@@ -163,15 +330,80 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getTempDirectory(params?: {
+    success?: (params: {
+      
+      tempDirectory: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function writeLogFile(params: {
+    
+    resId: string
+    
+    logDir?: string
+    
+    data: string
+    
+    append?: boolean
+    success?: (params: {
+      
+      filePath?: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getFileInfo(params: {
+    
+    filePath: string
+    
+    digestAlgorithm: string
+    success?: (params: {
+      
+      size: number
+      
+      digest: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
   export function startGyroscope(params?: {
     
     interval?: GyroscopeInterval
-    complete?: () => void
     success?: (params: null) => void
-    failure?: (params: {
+    fail?: (params: {
       errorMsg: string
       errorCode: string | number
       innerError: {
@@ -179,13 +411,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function stopGyroscope(params?: {
-    complete?: () => void
     success?: (params: null) => void
-    failure?: (params: {
+    fail?: (params: {
       errorMsg: string
       errorCode: string | number
       innerError: {
@@ -193,6 +425,147 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function initializeUploadFile(params: {
+    
+    deviceId: string
+    
+    extData?: Object
+    
+    type?: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function uploadFileToDevice(params: {
+    
+    deviceId: string
+    
+    sid: string
+    
+    fileList?: string[]
+    
+    extData?: Object
+    
+    type?: string
+    
+    businessType?: string
+    
+    fileTypeList?: any
+    success?: (params: {
+      
+      taskId: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function cancelUploadFileToDevice(params: {
+    
+    taskId: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function compressImage(params: {
+    
+    fileList?: string[]
+    
+    dstWidth: number
+    
+    dstHeight: number
+    
+    format?: number
+    
+    imageSize?: number
+    success?: (params: {
+      
+      fileList?: string[]
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function compressVideo(params: {
+    
+    fileList?: string[]
+    
+    dstWidth: number
+    
+    dstHeight: number
+    
+    format?: number
+    
+    videoSize?: number
+    success?: (params: {
+      
+      fileList?: string[]
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function cropImages(params?: {
+    
+    cropFileList?: CropImageItemBean[]
+    success?: (params: {
+      
+      fileList?: string[]
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
@@ -203,7 +576,8 @@ declare namespace ty {
     sizeType?: string[]
     
     sourceType?: string[]
-    complete?: () => void
+    
+    disableDismissAnimationAfterSelect?: boolean
     success?: (params: {
       
       tempFilePaths: string[]
@@ -218,6 +592,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -230,7 +605,14 @@ declare namespace ty {
     sourceType?: string[]
     
     maxDuration?: number
-    complete?: () => void
+    
+    isFetchVideoFile?: boolean
+    
+    isClipVideo?: boolean
+    
+    maxClipDuration?: number
+    
+    isGetAlbumFileName?: boolean
     success?: (params: {
       
       type: string
@@ -245,13 +627,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function chooseCropImage(params?: {
     
     sourceType?: string[]
-    complete?: () => void
     success?: (params: {
       
       path: string
@@ -264,6 +646,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -272,7 +655,6 @@ declare namespace ty {
     urls: string[]
     
     current: number
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -282,13 +664,42 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function takePhoto(params: {
+    
+    bizSource?: string
+    
+    isShowScan: boolean
+    
+    guideInfo?: TakePhotoGuide
+    
+    isLaunchGuideImg: boolean
+    
+    isLocalModel: boolean
+    
+    crop: boolean
+    success?: (params: {
+      
+      imagePath: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
   export function getImageInfo(params: {
     
     src: string
-    complete?: () => void
     success?: (params: {
       
       width: number
@@ -307,13 +718,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function getVideoInfo(params: {
     
     src: string
-    complete?: () => void
     success?: (params: {
       
       width: number
@@ -340,13 +751,36 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function saveVideoToPhotosAlbum(params: {
     
     filePath: string
+    
+    modifyCreationDate?: boolean
+    success?: (params: {
+      
+      localIdentifier: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
     complete?: () => void
+  }): void
+
+  
+  export function saveImageToPhotosAlbum(params: {
+    
+    filePath: string
+    
+    modifyCreationDate?: boolean
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -356,6 +790,74 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function cropImage(params: {
+    
+    path: string
+    
+    width: number
+    
+    height: number
+    
+    type: number
+    success?: (params: {
+      
+      cropPath: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function fetchImageThumbnail(params: {
+    
+    originPath: string
+    
+    thumbWidth: number
+    
+    thumbHeight: number
+    success?: (params: {
+      
+      thumbnailPath: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function copyImage(params: {
+    
+    imagePath: string
+    success?: (params: {
+      
+      imagePath: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
@@ -370,7 +872,6 @@ declare namespace ty {
     duration?: number
     
     mask?: boolean
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -380,6 +881,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -398,12 +900,19 @@ declare namespace ty {
     confirmText?: string
     
     confirmColor?: string
-    complete?: () => void
+    
+    isShowGlobal?: boolean
+    
+    modalStyle?: ModalStyle
+    
+    inputAttr?: InputBean
     success?: (params: {
       
       confirm: boolean
       
       cancel: boolean
+      
+      inputContent: string
     }) => void
     fail?: (params: {
       errorMsg: string
@@ -413,6 +922,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -421,7 +931,6 @@ declare namespace ty {
     title: string
     
     mask?: boolean
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -431,6 +940,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -441,7 +951,8 @@ declare namespace ty {
     itemList: string[]
     
     itemColor?: string
-    complete?: () => void
+    
+    itemColors?: string[]
     success?: (params: {
       
       tapIndex: number
@@ -454,11 +965,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function hideToast(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -468,11 +979,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function hideLoading(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -482,13 +993,36 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
+
+  
+  export function getDeviceOrientation(params?: {
+    success?: (params: {
+      
+      orientation?: Orientation
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getDeviceOrientationSync(): {
+    
+    orientation?: Orientation
+  }
 
   
   export function makePhoneCall(params: {
     
     phoneNumber: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -498,13 +1032,15 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function setClipboardData(params: {
     
+    isSensitive?: boolean
+    
     data: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -514,11 +1050,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function getClipboardData(params?: {
-    complete?: () => void
     success?: (params: {
       
       data: string
@@ -531,13 +1067,15 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function updateVolume(params: {
     
     value: number
-    complete?: () => void
+    
+    volumeMode?: number[]
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -547,11 +1085,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function getCurrentVolume(params?: {
-    complete?: () => void
     success?: (params: {
       
       value: number
@@ -564,11 +1102,30 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getCurrentVolumeByMode(params?: {
+    
+    volumeMode?: number
+    success?: (params: {
+      
+      value: number
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
   export function registerSystemVolumeChange(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -578,11 +1135,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function unRegisterSystemVolumeChange(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -592,11 +1149,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function getSystemSetting(params?: {
-    complete?: () => void
     success?: (params: {
       
       bluetoothEnabled?: boolean
@@ -615,11 +1172,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function getDeviceInfo(params?: {
-    complete?: () => void
     success?: (params: {
       
       abi: string
@@ -640,11 +1197,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function getSystemInfo(params?: {
-    complete?: () => void
     success?: (params: {
       is24Hour: boolean
       system: string
@@ -657,6 +1214,10 @@ declare namespace ty {
       screenHeight: number
       windowWidth: number
       windowHeight: number
+      
+      useableWindowWidth: number
+      
+      useableWindowHeight: number
       statusBarHeight: number
       language: string
       safeArea: SafeArea
@@ -672,7 +1233,13 @@ declare namespace ty {
       locationEnabled: boolean
       wifiEnabled: boolean
       theme?: Themes
-      deviceOrientation?: Orientation
+      deviceOrientation?: Orientation_ApaBI3
+      
+      deviceLevel: string
+      
+      isSupportPinShortcut?: boolean
+      
+      deviceType?: string
     }) => void
     fail?: (params: {
       errorMsg: string
@@ -682,6 +1249,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -697,6 +1265,10 @@ declare namespace ty {
     screenHeight: number
     windowWidth: number
     windowHeight: number
+    
+    useableWindowWidth: number
+    
+    useableWindowHeight: number
     statusBarHeight: number
     language: string
     safeArea: SafeArea
@@ -712,12 +1284,17 @@ declare namespace ty {
     locationEnabled: boolean
     wifiEnabled: boolean
     theme?: Themes
-    deviceOrientation?: Orientation
+    deviceOrientation?: Orientation_ApaBI3
+    
+    deviceLevel: string
+    
+    isSupportPinShortcut?: boolean
+    
+    deviceType?: string
   }
 
   
   export function getWifiList(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -727,13 +1304,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function getConnectedWifi(params?: {
     
     partialInfo?: boolean
-    complete?: () => void
     success?: (params: {
       
       SSID: string
@@ -754,11 +1331,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function openSystemBluetoothSetting(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -768,11 +1345,80 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getAppAuthorizeSetting(params?: {
+    success?: (params: {
+      
+      albumAuthorized: string
+      
+      bluetoothAuthorized: string
+      
+      cameraAuthorized: string
+      
+      locationAuthorized: string
+      
+      locationReducedAccuracy: boolean
+      
+      microphoneAuthorized: string
+      
+      notificationAuthorized: string
+      
+      notificationAlertAuthorized: string
+      
+      notificationBadgeAuthorized: string
+      
+      notificationSoundAuthorized: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function getBattery(params?: {
+    success?: (params: {
+      
+      battery: number
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function deviceIsCharging(params?: {
+    success?: (params: {
+      
+      isCharging: boolean
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
   export function getNetworkType(params?: {
-    complete?: () => void
     success?: (params: {
       
       networkType: string
@@ -787,13 +1433,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function setScreenBrightness(params: {
     
     value: number
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -803,11 +1449,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function getScreenBrightness(params?: {
-    complete?: () => void
     success?: (params: {
       
       value: number
@@ -820,13 +1466,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function setKeepScreenOn(params: {
     
     keepScreenOn: boolean
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -836,13 +1482,13 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function vibrateShort(params: {
     
     type: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -852,11 +1498,11 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function vibrateLong(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -866,6 +1512,116 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function peekVibrate(params?: {
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function popVibrate(params?: {
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function peekVibrateContinuous(params?: {
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function notificationVibrate(params: {
+    
+    type: string
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function selectionVibrate(params?: {
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function startRecordingWithAmplitude(params: {
+    
+    sampleRate?: AudioSampleRate
+    
+    bitWidth: number
+    
+    numberOfChannels?: AudioNumChannel
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function stopRecordingWithAmplitude(params?: {
+    success?: (params: {
+      
+      tempFilePath: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
@@ -873,8 +1629,17 @@ declare namespace ty {
     
     onlyFromCamera?: boolean
     
+    isShowActionTitle?: boolean
+    
+    isShowTorch?: boolean
+    
+    isShowKeyboard?: boolean
+    
+    keyboardBean?: KeyboardBean
+    
+    customTips?: string
+    
     scanType?: string[]
-    complete?: () => void
     success?: (params: {
       
       result: string
@@ -895,6 +1660,28 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
+  }): void
+
+  
+  export function showScanLogin(params: {
+    
+    content: string
+    success?: (params: {
+      
+      code: number
+      
+      msg: string
+    }) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
   }): void
 
   
@@ -903,7 +1690,6 @@ declare namespace ty {
     key: string
     
     data: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -913,6 +1699,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -922,7 +1709,6 @@ declare namespace ty {
   export function getStorage(params: {
     
     key: string
-    complete?: () => void
     success?: (params: {
       
       data?: string
@@ -935,6 +1721,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -947,7 +1734,6 @@ declare namespace ty {
   export function removeStorage(params: {
     
     key: string
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -957,6 +1743,7 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
@@ -964,7 +1751,6 @@ declare namespace ty {
 
   
   export function clearStorage(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -974,19 +1760,82 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): void
 
   
   export function clearStorageSync(): null
 
   
+  export function onUploadFileToDeviceStart(
+    listener: (params: UploadStartEvent) => void
+  ): void
+
+  
+  export function offUploadFileToDeviceStart(
+    listener: (params: UploadStartEvent) => void
+  ): void
+
+  
+  export function onUploadFileToDeviceProgress(
+    listener: (params: UploadProgressEvent) => void
+  ): void
+
+  
+  export function offUploadFileToDeviceProgress(
+    listener: (params: UploadProgressEvent) => void
+  ): void
+
+  
+  export function onUploadFileToDeviceComplete(
+    listener: (params: UploadCompleteEvent) => void
+  ): void
+
+  
+  export function offUploadFileToDeviceComplete(
+    listener: (params: UploadCompleteEvent) => void
+  ): void
+
+  
+  export function onUploadFileFragToDeviceProgress(
+    listener: (params: UploadFragProgressEvent) => void
+  ): void
+
+  
+  export function offUploadFileFragToDeviceProgress(
+    listener: (params: UploadFragProgressEvent) => void
+  ): void
+
+  
+  export function onKeyboardHeightChange(
+    listener: (params: BeanRes) => void
+  ): void
+
+  
+  export function offKeyboardHeightChange(
+    listener: (params: BeanRes) => void
+  ): void
+
+  
+  export function onKeyboardWillShow(listener: (params: BeanRes) => void): void
+
+  
+  export function offKeyboardWillShow(listener: (params: BeanRes) => void): void
+
+  
+  export function onKeyboardWillHide(listener: (params: BeanRes) => void): void
+
+  
+  export function offKeyboardWillHide(listener: (params: BeanRes) => void): void
+
+  
   export function onSystemVolumeChangeEvent(
-    listener: (params: CurrentVolumeResponse) => void
+    listener: (params: VolumeResponse) => void
   ): void
 
   
   export function offSystemVolumeChangeEvent(
-    listener: (params: CurrentVolumeResponse) => void
+    listener: (params: VolumeResponse) => void
   ): void
 
   
@@ -1007,6 +1856,16 @@ declare namespace ty {
   
   export function offRecordingEvent(
     listener: (params: AudioRecordBufferBean) => void
+  ): void
+
+  
+  export function onRecordingAmplitudeEvent(
+    listener: (params: RecordingAmplitudeEventModel) => void
+  ): void
+
+  
+  export function offRecordingAmplitudeEvent(
+    listener: (params: RecordingAmplitudeEventModel) => void
   ): void
 
   
@@ -1118,6 +1977,22 @@ declare namespace ty {
   ): void
 
   
+  export function onOrientationChange(
+    listener: (params: {
+      
+      orientation?: Orientation
+    }) => void
+  ): void
+
+  
+  export function offOrientationChange(
+    listener: (params: {
+      
+      orientation?: Orientation
+    }) => void
+  ): void
+
+  
   export function onBluetoothAdapterStateChange(
     listener: (params: {
       
@@ -1152,6 +2027,25 @@ declare namespace ty {
       networkType: string
     }) => void
   ): void
+
+  export enum WidgetVersionType {
+    
+    release = "release",
+
+    
+    preview = "preview",
+  }
+
+  export enum WidgetPosition {
+    
+    bottom = "bottom",
+
+    
+    top = "top",
+
+    
+    center = "center",
+  }
 
   export type Profile = {
     
@@ -1303,6 +2197,65 @@ declare namespace ty {
     CONNECT = "CONNECT",
   }
 
+  export enum AudioSampleRate {
+    
+    RATE_8000 = 8000,
+
+    
+    RATE_11025 = 11025,
+
+    
+    RATE_12000 = 12000,
+
+    
+    RATE_16000 = 16000,
+
+    
+    RATE_22050 = 22050,
+
+    
+    RATE_24000 = 24000,
+
+    
+    RATE_32000 = 32000,
+
+    
+    RATE_44100 = 44100,
+
+    
+    RATE_48000 = 48000,
+  }
+
+  export enum AudioNumChannel {
+    
+    SINGLE = 1,
+
+    
+    DOUBLE = 2,
+  }
+
+  export enum AudioFormat {
+    
+    MP3 = "mp3",
+
+    
+    AAC = "aac",
+
+    
+    WAV = "wav",
+
+    
+    PCM = "PCM",
+  }
+
+  export enum UploadHttpMethod {
+    
+    POST = "POST",
+
+    
+    PUT = "PUT",
+  }
+
   export enum AccelerometerInterval {
     
     game = "game",
@@ -1312,6 +2265,37 @@ declare namespace ty {
 
     
     normal = "normal",
+  }
+
+  export enum ScopeBean {
+    
+    BLUETOOTH = "scope.bluetooth",
+
+    
+    RECORD = "scope.record",
+
+    
+    WRITEPHOTOSALBUM = "scope.writePhotosAlbum",
+
+    
+    CAMERA = "scope.camera",
+
+    
+    USERLOCATION = "scope.userLocation",
+
+    
+    USERPRECISELOCATION = "scope.userPreciseLocation",
+
+    
+    USERLOCATIONBACKGROUND = "scope.userLocationBackground",
+
+    
+    USERINFO = "scope.userInfo",
+  }
+
+  export type SchemaBean = {
+    
+    schema: string
   }
 
   export enum DeviceMotionInterval {
@@ -1336,6 +2320,25 @@ declare namespace ty {
     normal = "normal",
   }
 
+  export type Object = {}
+
+  export type CropImageItemBean = {
+    
+    filePath?: string
+    
+    topLeftX: number
+    
+    topLeftY: number
+    
+    bottomRightX: number
+    
+    bottomRightY: number
+    
+    format: number
+    
+    rotate: number
+  }
+
   export type TempFileCB = {
     
     path: string
@@ -1358,6 +2361,64 @@ declare namespace ty {
     thumbTempFilePath: string
     
     fileType: string
+    
+    originalVideoPath: string
+  }
+
+  export type TakePhotoGuide = {
+    
+    guideTitle: string
+    
+    topGuideImgUrl: string
+    
+    topGuideIconUrl: string
+    
+    topGuideDesc: string
+    
+    bottomLeftGuideImgUrl: string
+    
+    bottomLeftGuideIconUrl: string
+    
+    bottomLeftGuideDesc: string
+    
+    bottomRightGuideImgUrl: string
+    
+    bottomRightGuideIconUrl: string
+    
+    bottomRightGuideDesc: string
+  }
+
+  export enum ModalStyle {
+    
+    Default = 0,
+
+    
+    Input = 1,
+  }
+
+  export type InputBean = {
+    
+    placeholder?: string
+    
+    placeHolderColor?: string
+    
+    backgroundColor?: string
+    
+    textColor?: string
+  }
+
+  export enum Orientation {
+    
+    UNKNOWN = "unknown",
+
+    
+    PORTRAIT = "portrait",
+
+    
+    LANDSCAPE_LEFT = "landscape-left",
+
+    
+    LANDSCAPE_RIGHT = "landscape-right",
   }
 
   export type SafeArea = {
@@ -1370,15 +2431,30 @@ declare namespace ty {
   }
 
   export enum Themes {
+    
     dark = "dark",
 
+    
     light = "light",
   }
 
-  export enum Orientation {
+  export enum Orientation_ApaBI3 {
+    
     portrait = "portrait",
 
+    
     landscape = "landscape",
+  }
+
+  export type KeyboardBean = {
+    
+    title?: string
+    
+    placeholder?: string
+    
+    desc?: string
+    
+    actionText?: string
   }
 
   export type StorageDataBean = {
@@ -1393,9 +2469,104 @@ declare namespace ty {
     key: string
   }
 
-  export type CurrentVolumeResponse = {
+  export type UploadStartEvent = {
+    
+    taskId: string
+    
+    sid: string
+    
+    prefix: string
+    
+    fileCount: number
+    
+    extData?: Object
+    
+    configInfo?: Object
+  }
+
+  export type UploadProgressEvent = {
+    
+    taskId: string
+    
+    sid: string
+    
+    prefix: string
+    
+    name: string
+    
+    filePath: string
+    
+    cloudUrl?: string
+    
+    code: string
+    
+    error?: string
+    
+    frags?: FragInfoBean[]
+    
+    extData?: Object
+    
+    fileSize?: number
+  }
+
+  export type UploadCompleteEvent = {
+    
+    taskId: string
+    
+    sid: string
+    
+    prefix: string
+    
+    uploaded?: string[]
+    
+    failed?: string[]
+    
+    extData?: Object
+  }
+
+  export type UploadFragProgressEvent = {
+    
+    taskId: string
+    
+    sid: string
+    
+    prefix: string
+    
+    filePath: string
+    
+    fileSize?: number
+    
+    fragName: string
+    
+    fragPath: string
+    
+    fragCloudUrl?: string
+    
+    code: string
+    
+    error?: string
+    
+    fragIndex?: number
+    
+    fragCount?: number
+    
+    fragSize?: number
+    
+    fragPos?: number
+    
+    extData?: Object
+  }
+
+  export type BeanRes = {
+    
+    height: number
+  }
+
+  export type VolumeResponse = {
     
     value: number
+    
+    volumeMode?: number
   }
 
   export type WifiListResponse = {
@@ -1408,7 +2579,14 @@ declare namespace ty {
     buffer: number[]
   }
 
-  export type InnerAudioContext = {
+  export type RecordingAmplitudeEventModel = {
+    
+    timeMillis: number
+    
+    amplitude: number
+  }
+
+  export type InnerAudioContextBean = {
     
     contextId: string
   }
@@ -1449,22 +2627,140 @@ declare namespace ty {
 
   export type AuthorizeBean = {
     
-    scope: string
+    scope?: ScopeBean
+  }
+
+  export type SettingBean = {
+    
+    authSetting: any
+  }
+
+  export type AuthorizePolicyReqBean = {
+    
+    type: string
+    
+    version: string
+    
+    status: number
+  }
+
+  export type AuthorizePolicyRespBean = {
+    
+    agreed: boolean
+  }
+
+  export type AuthorizePolicyStatusReqBean = {
+    
+    type: string
+  }
+
+  export type AuthorizePolicyStatusRespBean = {
+    
+    title: string
+    
+    agreementName: string
+    
+    agreementDesc: string
+    
+    link: string
+    
+    version: string
+    
+    sign: number
   }
 
   export type ToMiniProgramBean = {
     
     appId?: string
     
+    aiPtChannel?: string
+    
+    aiPtType?: string
+    
     path?: string
     
     position?: string
     
-    extraData?: Record<string, any>
+    extraData?: any
     
     envVersion?: string
     
     shortLink?: string
+  }
+
+  export type MiniWidgetDeploysBean = {
+    
+    dialogId: string
+    
+    appId: string
+    
+    pagePath?: string
+    
+    deviceId?: string
+    
+    groupId?: string
+    
+    style?: string
+    
+    versionType?: WidgetVersionType
+    
+    version?: string
+    
+    position?: WidgetPosition
+    
+    autoDismiss?: boolean
+    
+    autoCache?: boolean
+    
+    supportDark?: boolean
+  }
+
+  export type MiniWidgetDialogBean = {}
+
+  export type SuccessResult = {
+    
+    result: boolean
+  }
+
+  export type VideoThumbnailsBean = {
+    
+    filePath: string
+    
+    startTime: number
+    
+    endTime: number
+    
+    thumbnailCount: number
+    
+    thumbnailWidth: number
+    
+    thumbnailHeight: number
+  }
+
+  export type VideoThumbnailsResult = {
+    
+    thumbnailsPath?: string[]
+  }
+
+  export type ClearVideoThumbnailsBean = {
+    
+    videoName: string
+  }
+
+  export type VideoClipBean = {
+    
+    filePath: string
+    
+    startTime: number
+    
+    endTime: number
+    
+    level: number
+  }
+
+  export type VideoClipResult = {
+    
+    videoClipPath?: string
   }
 
   export type DeviceMotionBean = {
@@ -1478,7 +2774,7 @@ declare namespace ty {
     
     url: string
     
-    header?: Record<string, string>
+    header?: any
     
     timeout?: number
     
@@ -1516,6 +2812,11 @@ declare namespace ty {
     savedFilePath: string
   }
 
+  export type TempDirectoryResponse = {
+    
+    tempDirectory: string
+  }
+
   export type FileStatsResponse = {
     
     fileStatsList: FileStats[]
@@ -1528,9 +2829,129 @@ declare namespace ty {
     filePath: string
   }
 
+  export type LogFileParams = {
+    
+    resId: string
+    
+    logDir?: string
+    
+    data: string
+    
+    append?: boolean
+  }
+
+  export type LogFileRes = {
+    
+    filePath?: string
+  }
+
+  export type FileInfoParams = {
+    
+    filePath: string
+    
+    digestAlgorithm: string
+  }
+
+  export type FileInfoRes = {
+    
+    size: number
+    
+    digest: string
+  }
+
   export type GyroscopeBean = {
     
     interval?: GyroscopeInterval
+  }
+
+  export type FragInfoBean = {
+    
+    fragName: string
+    
+    fragCloudUrl?: string
+    
+    fragPath: string
+    
+    code: string
+    
+    error?: string
+  }
+
+  export type InitBean = {
+    
+    deviceId: string
+    
+    extData?: Object
+    
+    type?: string
+  }
+
+  export type UploadFileBean = {
+    
+    deviceId: string
+    
+    sid: string
+    
+    fileList?: string[]
+    
+    extData?: Object
+    
+    type?: string
+    
+    businessType?: string
+    
+    fileTypeList?: any
+  }
+
+  export type UploadFileCb = {
+    
+    taskId: string
+  }
+
+  export type CancelUploadBean = {
+    
+    taskId: string
+  }
+
+  export type CompressImageBean = {
+    
+    fileList?: string[]
+    
+    dstWidth: number
+    
+    dstHeight: number
+    
+    format?: number
+    
+    imageSize?: number
+  }
+
+  export type CompressImageCb = {
+    
+    fileList?: string[]
+  }
+
+  export type CompressVideoBean = {
+    
+    fileList?: string[]
+    
+    dstWidth: number
+    
+    dstHeight: number
+    
+    format?: number
+    
+    videoSize?: number
+  }
+
+  export type CropImageBean = {
+    
+    cropFileList?: CropImageItemBean[]
+  }
+
+  export type CropImageCb = {
+    
+    fileList?: string[]
   }
 
   export type ChooseImageBean = {
@@ -1540,6 +2961,8 @@ declare namespace ty {
     sizeType?: string[]
     
     sourceType?: string[]
+    
+    disableDismissAnimationAfterSelect?: boolean
   }
 
   export type ChooseImageCB = {
@@ -1558,6 +2981,14 @@ declare namespace ty {
     sourceType?: string[]
     
     maxDuration?: number
+    
+    isFetchVideoFile?: boolean
+    
+    isClipVideo?: boolean
+    
+    maxClipDuration?: number
+    
+    isGetAlbumFileName?: boolean
   }
 
   export type ChooseMediaCB = {
@@ -1582,6 +3013,26 @@ declare namespace ty {
     urls: string[]
     
     current: number
+  }
+
+  export type TakePhotoBean = {
+    
+    bizSource?: string
+    
+    isShowScan: boolean
+    
+    guideInfo?: TakePhotoGuide
+    
+    isLaunchGuideImg: boolean
+    
+    isLocalModel: boolean
+    
+    crop: boolean
+  }
+
+  export type TakePhotoCB = {
+    
+    imagePath: string
   }
 
   export type GetImageInfoParams = {
@@ -1627,6 +3078,60 @@ declare namespace ty {
   export type SaveVideoParams = {
     
     filePath: string
+    
+    modifyCreationDate?: boolean
+  }
+
+  export type VideoSaveAlbumResponse = {
+    
+    localIdentifier: string
+  }
+
+  export type SaveImageParams = {
+    
+    filePath: string
+    
+    modifyCreationDate?: boolean
+  }
+
+  export type CropImageBean_rCkr4n = {
+    
+    path: string
+    
+    width: number
+    
+    height: number
+    
+    type: number
+  }
+
+  export type CropImageResult = {
+    
+    cropPath: string
+  }
+
+  export type ImageThumbnailBean = {
+    
+    originPath: string
+    
+    thumbWidth: number
+    
+    thumbHeight: number
+  }
+
+  export type ImageThumbnailResult = {
+    
+    thumbnailPath: string
+  }
+
+  export type CopyImageBean = {
+    
+    imagePath: string
+  }
+
+  export type CopyImageResult = {
+    
+    imagePath: string
   }
 
   export type ToastBean = {
@@ -1657,6 +3162,12 @@ declare namespace ty {
     confirmText?: string
     
     confirmColor?: string
+    
+    isShowGlobal?: boolean
+    
+    modalStyle?: ModalStyle
+    
+    inputAttr?: InputBean
   }
 
   export type ModalCallback = {
@@ -1664,6 +3175,8 @@ declare namespace ty {
     confirm: boolean
     
     cancel: boolean
+    
+    inputContent: string
   }
 
   export type LoadingBean = {
@@ -1680,6 +3193,8 @@ declare namespace ty {
     itemList: string[]
     
     itemColor?: string
+    
+    itemColors?: string[]
   }
 
   export type ActionSheetCallback = {
@@ -1695,13 +3210,13 @@ declare namespace ty {
     
     data?: string
     
-    header?: Record<string, string>
+    header?: any
     
     timeout?: number
     
     method?: HTTPMethod
     
-    dataType?: any
+    dataType?: string
     
     responseType?: string
     
@@ -1712,13 +3227,13 @@ declare namespace ty {
     enableCache?: boolean
   }
 
-  export type SuccessResult = {
+  export type SuccessResult_VbWghp = {
     
     data: string
     
     statusCode: number
     
-    header: Record<string, string>
+    header: any
     
     cookies: string[]
     
@@ -1732,9 +3247,21 @@ declare namespace ty {
     taskId: string
   }
 
+  export type OrientationResponse = {
+    
+    orientation?: Orientation
+  }
+
   export type PhoneCallBean = {
     
     phoneNumber: string
+  }
+
+  export type ClipboradSetReqBean = {
+    
+    isSensitive?: boolean
+    
+    data: string
   }
 
   export type ClipboradDataBean = {
@@ -1758,6 +3285,18 @@ declare namespace ty {
   export type UpdateVolumeParams = {
     
     value: number
+    
+    volumeMode?: number[]
+  }
+
+  export type CurrentVolumeResponse = {
+    
+    value: number
+  }
+
+  export type CurrentVolumeParams = {
+    
+    volumeMode?: number
   }
 
   export type SystemSetting = {
@@ -1796,6 +3335,10 @@ declare namespace ty {
     screenHeight: number
     windowWidth: number
     windowHeight: number
+    
+    useableWindowWidth: number
+    
+    useableWindowHeight: number
     statusBarHeight: number
     language: string
     safeArea: SafeArea
@@ -1811,12 +3354,51 @@ declare namespace ty {
     locationEnabled: boolean
     wifiEnabled: boolean
     theme?: Themes
-    deviceOrientation?: Orientation
+    deviceOrientation?: Orientation_ApaBI3
+    
+    deviceLevel: string
+    
+    isSupportPinShortcut?: boolean
+    
+    deviceType?: string
   }
 
   export type GetConnectedWifiParams = {
     
     partialInfo?: boolean
+  }
+
+  export type AppAuthorizeSettingRes = {
+    
+    albumAuthorized: string
+    
+    bluetoothAuthorized: string
+    
+    cameraAuthorized: string
+    
+    locationAuthorized: string
+    
+    locationReducedAccuracy: boolean
+    
+    microphoneAuthorized: string
+    
+    notificationAuthorized: string
+    
+    notificationAlertAuthorized: string
+    
+    notificationBadgeAuthorized: string
+    
+    notificationSoundAuthorized: string
+  }
+
+  export type BatteryResponse = {
+    
+    battery: number
+  }
+
+  export type DeviceChargingResponse = {
+    
+    isCharging: boolean
   }
 
   export type NetworkTypeCB = {
@@ -1841,17 +3423,22 @@ declare namespace ty {
     type: string
   }
 
+  export type NotificationBean = {
+    
+    type: string
+  }
+
   export type AudioStart = {
     
     duration?: number
     
-    sampleRate?: number
+    sampleRate?: AudioSampleRate
     
-    numberOfChannels?: number
+    numberOfChannels?: AudioNumChannel
     
     encodeBitRate?: number
     
-    format?: string
+    format?: AudioFormat
     
     frameSize: number
     
@@ -1875,11 +3462,32 @@ declare namespace ty {
     contextId: string
     
     period: number
+    
+    pcm16IOS?: boolean
+  }
+
+  export type StartAmplitudeRecordingParam = {
+    
+    sampleRate?: AudioSampleRate
+    
+    bitWidth: number
+    
+    numberOfChannels?: AudioNumChannel
   }
 
   export type ScanCodeBean = {
     
     onlyFromCamera?: boolean
+    
+    isShowActionTitle?: boolean
+    
+    isShowTorch?: boolean
+    
+    isShowKeyboard?: boolean
+    
+    keyboardBean?: KeyboardBean
+    
+    customTips?: string
     
     scanType?: string[]
   }
@@ -1897,6 +3505,18 @@ declare namespace ty {
     rawData: string
   }
 
+  export type ScanLoginBean = {
+    
+    content: string
+  }
+
+  export type ScanLoginResult = {
+    
+    code: number
+    
+    msg: string
+  }
+
   export type StorageCallback = {
     
     data?: string
@@ -1912,11 +3532,13 @@ declare namespace ty {
     
     name: string
     
-    header?: Record<string, string>
+    header?: any
     
-    formData?: Record<string, string>
+    formData?: any
     
     timeout?: number
+    
+    method?: UploadHttpMethod
   }
 
   export type UpLoadResult = {
@@ -1927,10 +3549,9 @@ declare namespace ty {
   }
 
   
-  interface CreateInnerAudioContextTask {
+  interface InnerAudioContext {
     
     pause(params: {
-      complete?: () => void
       success?: (params: null) => void
       fail?: (params: {
         errorMsg: string
@@ -1940,11 +3561,11 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
     resume(params: {
-      complete?: () => void
       success?: (params: null) => void
       fail?: (params: {
         errorMsg: string
@@ -1954,6 +3575,7 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
@@ -1970,7 +3592,6 @@ declare namespace ty {
       volume?: number
       
       playbackRate?: number
-      complete?: () => void
       success?: (params: null) => void
       fail?: (params: {
         errorMsg: string
@@ -1980,13 +3601,13 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
     seek(params: {
       
       position?: number
-      complete?: () => void
       success?: (params: null) => void
       fail?: (params: {
         errorMsg: string
@@ -1996,11 +3617,11 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
     stop(params: {
-      complete?: () => void
       success?: (params: null) => void
       fail?: (params: {
         errorMsg: string
@@ -2010,11 +3631,11 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
     destroy(params: {
-      complete?: () => void
       success?: (params: null) => void
       fail?: (params: {
         errorMsg: string
@@ -2024,20 +3645,61 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
+    }): void
+
+    
+    destroyPlayer(params: {
+      success?: (params: null) => void
+      fail?: (params: {
+        errorMsg: string
+        errorCode: string | number
+        innerError: {
+          errorCode: string | number
+          errorMsg: string
+        }
+      }) => void
+      complete?: () => void
     }): void
 
     
     onTimeUpdate(
       listener: (params: {
         
-        contextId: string
+        time: number
+        
+        current: number
+      }) => void
+    ): void
+
+    
+    offTimeUpdate(
+      listener: (params: {
         
         time: number
+        
+        current: number
+      }) => void
+    ): void
+
+    
+    onPlayerStatusUpdate(
+      listener: (params: {
+        
+        status: number
+      }) => void
+    ): void
+
+    
+    offPlayerStatusUpdate(
+      listener: (params: {
+        
+        status: number
       }) => void
     ): void
   }
+  
   export function createInnerAudioContext(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -2047,15 +3709,15 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
-  }): CreateInnerAudioContextTask
+    complete?: () => void
+  }): InnerAudioContext
 
   
-  interface DownloadFileTask {
+  interface MiniWidgetDialog {
     
-    abort(params: {
-      complete?: () => void
+    dismissMiniWidget(params: {
       success?: (params: null) => void
-      failure?: (params: {
+      fail?: (params: {
         errorMsg: string
         errorCode: string | number
         innerError: {
@@ -2063,15 +3725,72 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
+    }): void
+
+    
+    onWidgetDismiss(listener: (params: {}) => void): void
+
+    
+    offWidgetDismiss(listener: (params: {}) => void): void
+  }
+  
+  export function openMiniWidget(params: {
+    
+    appId: string
+    
+    pagePath?: string
+    
+    deviceId?: string
+    
+    groupId?: string
+    
+    style?: string
+    
+    versionType?: WidgetVersionType
+    
+    version?: string
+    
+    position?: WidgetPosition
+    
+    autoDismiss?: boolean
+    
+    autoCache?: boolean
+    
+    supportDark?: boolean
+    success?: (params: null) => void
+    fail?: (params: {
+      errorMsg: string
+      errorCode: string | number
+      innerError: {
+        errorCode: string | number
+        errorMsg: string
+      }
+    }) => void
+    complete?: () => void
+  }): MiniWidgetDialog
+
+  
+  interface DownloadTask {
+    
+    abort(params: {
+      success?: (params: null) => void
+      fail?: (params: {
+        errorMsg: string
+        errorCode: string | number
+        innerError: {
+          errorCode: string | number
+          errorMsg: string
+        }
+      }) => void
+      complete?: () => void
     }): void
 
     
     onHeadersReceived(
       listener: (params: {
         
-        header: Record<string, string>
-        
-        requestId: string
+        header: any
       }) => void
     ): void
 
@@ -2079,9 +3798,7 @@ declare namespace ty {
     offHeadersReceived(
       listener: (params: {
         
-        header: Record<string, string>
-        
-        requestId: string
+        header: any
       }) => void
     ): void
 
@@ -2094,8 +3811,6 @@ declare namespace ty {
         totalBytesSent: number
         
         totalBytesExpectedToSend: number
-        
-        requestId: string
       }) => void
     ): void
 
@@ -2108,21 +3823,19 @@ declare namespace ty {
         totalBytesSent: number
         
         totalBytesExpectedToSend: number
-        
-        requestId: string
       }) => void
     ): void
   }
+  
   export function downloadFile(params: {
     
     url: string
     
-    header?: Record<string, string>
+    header?: any
     
     timeout?: number
     
     filePath?: string
-    complete?: () => void
     success?: (params: {
       
       tempFilePath: string
@@ -2133,7 +3846,7 @@ declare namespace ty {
       
       profile: Profile
     }) => void
-    failure?: (params: {
+    fail?: (params: {
       errorMsg: string
       errorCode: string | number
       innerError: {
@@ -2141,15 +3854,15 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
-  }): DownloadFileTask
+    complete?: () => void
+  }): DownloadTask
 
   
-  interface GetFileSystemManagerTask {
+  interface FileSystemManager {
     
     access(params: {
       
       path: string
-      complete?: () => void
       success?: (params: null) => void
       fail?: (params: {
         errorMsg: string
@@ -2159,6 +3872,7 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
@@ -2171,7 +3885,6 @@ declare namespace ty {
       position?: number
       
       length?: number
-      complete?: () => void
       success?: (params: {
         
         data: string
@@ -2184,6 +3897,7 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
@@ -2198,7 +3912,6 @@ declare namespace ty {
       tempFilePath: string
       
       filePath: string
-      complete?: () => void
       success?: (params: {
         
         savedFilePath: string
@@ -2211,6 +3924,7 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
@@ -2225,7 +3939,6 @@ declare namespace ty {
       path: string
       
       recursive?: boolean
-      complete?: () => void
       success?: (params: {
         
         fileStatsList: FileStats[]
@@ -2238,6 +3951,7 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
@@ -2252,7 +3966,6 @@ declare namespace ty {
       dirPath: string
       
       recursive?: boolean
-      complete?: () => void
       success?: (params: null) => void
       fail?: (params: {
         errorMsg: string
@@ -2262,6 +3975,7 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
@@ -2273,7 +3987,6 @@ declare namespace ty {
       dirPath: string
       
       recursive?: boolean
-      complete?: () => void
       success?: (params: null) => void
       fail?: (params: {
         errorMsg: string
@@ -2283,6 +3996,7 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
@@ -2296,7 +4010,6 @@ declare namespace ty {
       data: string
       
       encoding?: string
-      complete?: () => void
       success?: (params: null) => void
       fail?: (params: {
         errorMsg: string
@@ -2306,6 +4019,7 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
@@ -2315,7 +4029,6 @@ declare namespace ty {
     removeSavedFile(params: {
       
       filePath: string
-      complete?: () => void
       success?: (params: null) => void
       fail?: (params: {
         errorMsg: string
@@ -2325,10 +4038,11 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
   }
+  
   export function getFileSystemManager(params?: {
-    complete?: () => void
     success?: (params: null) => void
     fail?: (params: {
       errorMsg: string
@@ -2338,15 +4052,15 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
-  }): GetFileSystemManagerTask
+    complete?: () => void
+  }): FileSystemManager
 
   
   interface RequestTask {
     
     abort(params: {
-      complete?: () => void
       success?: (params: null) => void
-      failure?: (params: {
+      fail?: (params: {
         errorMsg: string
         errorCode: string | number
         innerError: {
@@ -2354,15 +4068,14 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
     onHeadersReceived(
       listener: (params: {
         
-        header: Record<string, string>
-        
-        requestId: string
+        header: any
       }) => void
     ): void
 
@@ -2370,25 +4083,24 @@ declare namespace ty {
     offHeadersReceived(
       listener: (params: {
         
-        header: Record<string, string>
-        
-        requestId: string
+        header: any
       }) => void
     ): void
   }
+  
   export function request(params: {
     
     url: string
     
     data?: string
     
-    header?: Record<string, string>
+    header?: any
     
     timeout?: number
     
     method?: HTTPMethod
     
-    dataType?: any
+    dataType?: string
     
     responseType?: string
     
@@ -2397,14 +4109,13 @@ declare namespace ty {
     enableQuic?: boolean
     
     enableCache?: boolean
-    complete?: () => void
     success?: (params: {
       
       data: string
       
       statusCode: number
       
-      header: Record<string, string>
+      header: any
       
       cookies: string[]
       
@@ -2412,7 +4123,7 @@ declare namespace ty {
       
       taskId: string
     }) => void
-    failure?: (params: {
+    fail?: (params: {
       errorMsg: string
       errorCode: string | number
       innerError: {
@@ -2420,32 +4131,32 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
+    complete?: () => void
   }): RequestTask
 
   
-  interface GetRecorderManagerTask {
+  interface RecorderManager {
     
     start(params: {
       
       duration?: number
       
-      sampleRate?: number
+      sampleRate?: AudioSampleRate
       
-      numberOfChannels?: number
+      numberOfChannels?: AudioNumChannel
       
       encodeBitRate?: number
       
-      format?: string
+      format?: AudioFormat
       
       frameSize: number
       
       audioSource?: string
-      complete?: () => void
       success?: (params: {
         
         tempFilePath: string
       }) => void
-      failure?: (params: {
+      fail?: (params: {
         errorMsg: string
         errorCode: string | number
         innerError: {
@@ -2453,16 +4164,16 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
     resume(params: {
-      complete?: () => void
       success?: (params: {
         
         tempFilePath: string
       }) => void
-      failure?: (params: {
+      fail?: (params: {
         errorMsg: string
         errorCode: string | number
         innerError: {
@@ -2470,16 +4181,16 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
     pause(params: {
-      complete?: () => void
       success?: (params: {
         
         tempFilePath: string
       }) => void
-      failure?: (params: {
+      fail?: (params: {
         errorMsg: string
         errorCode: string | number
         innerError: {
@@ -2487,16 +4198,16 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
     stop(params: {
-      complete?: () => void
       success?: (params: {
         
         tempFilePath: string
       }) => void
-      failure?: (params: {
+      fail?: (params: {
         errorMsg: string
         errorCode: string | number
         innerError: {
@@ -2504,15 +4215,17 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
     startRecording(params: {
       
       period: number
-      complete?: () => void
+      
+      pcm16IOS?: boolean
       success?: (params: null) => void
-      failure?: (params: {
+      fail?: (params: {
         errorMsg: string
         errorCode: string | number
         innerError: {
@@ -2520,13 +4233,13 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
     stopRecording(params: {
-      complete?: () => void
       success?: (params: null) => void
-      failure?: (params: {
+      fail?: (params: {
         errorMsg: string
         errorCode: string | number
         innerError: {
@@ -2534,12 +4247,13 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
   }
+  
   export function getRecorderManager(params?: {
-    complete?: () => void
     success?: (params: null) => void
-    failure?: (params: {
+    fail?: (params: {
       errorMsg: string
       errorCode: string | number
       innerError: {
@@ -2547,15 +4261,15 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
-  }): GetRecorderManagerTask
+    complete?: () => void
+  }): RecorderManager
 
   
-  interface UploadFileTask {
+  interface UploadTask {
     
     abort(params: {
-      complete?: () => void
       success?: (params: null) => void
-      failure?: (params: {
+      fail?: (params: {
         errorMsg: string
         errorCode: string | number
         innerError: {
@@ -2563,15 +4277,14 @@ declare namespace ty {
           errorMsg: string
         }
       }) => void
+      complete?: () => void
     }): void
 
     
     onHeadersReceived(
       listener: (params: {
         
-        header: Record<string, string>
-        
-        requestId: string
+        header: any
       }) => void
     ): void
 
@@ -2579,9 +4292,7 @@ declare namespace ty {
     offHeadersReceived(
       listener: (params: {
         
-        header: Record<string, string>
-        
-        requestId: string
+        header: any
       }) => void
     ): void
 
@@ -2594,8 +4305,6 @@ declare namespace ty {
         totalBytesSent: number
         
         totalBytesExpectedToSend: number
-        
-        requestId: string
       }) => void
     ): void
 
@@ -2608,11 +4317,10 @@ declare namespace ty {
         totalBytesSent: number
         
         totalBytesExpectedToSend: number
-        
-        requestId: string
       }) => void
     ): void
   }
+  
   export function uploadFile(params: {
     
     url: string
@@ -2621,19 +4329,20 @@ declare namespace ty {
     
     name: string
     
-    header?: Record<string, string>
+    header?: any
     
-    formData?: Record<string, string>
+    formData?: any
     
     timeout?: number
-    complete?: () => void
+    
+    method?: UploadHttpMethod
     success?: (params: {
       
       data: string
       
       statusCode: number
     }) => void
-    failure?: (params: {
+    fail?: (params: {
       errorMsg: string
       errorCode: string | number
       innerError: {
@@ -2641,5 +4350,6 @@ declare namespace ty {
         errorMsg: string
       }
     }) => void
-  }): UploadFileTask
+    complete?: () => void
+  }): UploadTask
 }

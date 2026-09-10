@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
+	"fmt"
 	"io"
 	"net/http"
 	"path/filepath"
@@ -164,6 +166,34 @@ func TestFetchRuntimeBundle(t *testing.T) {
 		8,
 	); err == nil {
 		t.Fatal("expected maximum size validation error")
+	}
+}
+
+func TestFetchRuntimeBundleFromGiteeContentsAPI(t *testing.T) {
+	bundle := `{"schema_version":1,"version":"v3","mappings":[{"name":"公卫灯"}]}`
+	responseBody := fmt.Sprintf(
+		`{"type":"file","encoding":"base64","content":%q}`,
+		base64.StdEncoding.EncodeToString([]byte(bundle)),
+	)
+	client := &http.Client{Transport: roundTripFunc(func(_ *http.Request) (*http.Response, error) {
+		return &http.Response{
+			StatusCode: http.StatusOK,
+			Body:       io.NopCloser(strings.NewReader(responseBody)),
+			Header:     make(http.Header),
+		}, nil
+	})}
+
+	data, err := fetchRuntimeBundleWithClient(
+		context.Background(),
+		client,
+		"https://gitee.com/api/v5/repos/example/config/contents/knx/knx-mapping.json?ref=master",
+		1024,
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(data) != bundle {
+		t.Fatalf("decoded runtime bundle = %q, want %q", data, bundle)
 	}
 }
 

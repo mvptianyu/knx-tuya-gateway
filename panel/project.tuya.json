@@ -6,13 +6,13 @@
   "miniprogramRoot": "./dist/tuya",
   "projectId": "ty07krvsomzagjobz6",
   "dependencies": {
-    "BaseKit": "3.0.0",
-    "MiniKit": "3.0.0",
-    "DeviceKit": "3.0.0",
-    "BizKit": "3.0.1",
-    "HomeKit": "3.0.2"
+    "BaseKit": "3.28.0",
+    "MiniKit": "3.24.0",
+    "DeviceKit": "4.8.0",
+    "BizKit": "4.18.0",
+    "HomeKit": "3.12.0"
   },
-  "baseversion": "2.27.0",
+  "baseversion": "2.30.1",
   "devMode": "ray",
   "compileType": "miniprogram",
   "projectname": "树莓派定制网关",

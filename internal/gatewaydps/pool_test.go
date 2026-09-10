@@ -34,14 +34,19 @@ func TestBuildPlan(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if artifacts.ModelPlan.AllocatedFunctions != 12 {
-		t.Fatalf("allocated functions = %d, want 12", artifacts.ModelPlan.AllocatedFunctions)
+	if artifacts.ModelPlan.AllocatedFunctions != 16 {
+		t.Fatalf("allocated functions = %d, want 16", artifacts.ModelPlan.AllocatedFunctions)
 	}
 	if !artifacts.ModelPlan.Functions[0].Mapped {
 		t.Fatal("mapped function was not marked")
 	}
 	if artifacts.ModelPlan.Functions[0].KNXWriteGA != "" {
 		t.Fatalf("unexpected KNX address in partial test item: %+v", artifacts.ModelPlan.Functions[0])
+	}
+	debug := artifacts.ModelPlan.Functions[len(artifacts.ModelPlan.Functions)-4:]
+	if debug[0].DPID != 177 || debug[0].Code != "knx_debug_request" ||
+		debug[3].DPID != 180 || debug[3].Code != "knx_debug_result" {
+		t.Fatalf("unexpected diagnostic functions: %+v", debug)
 	}
 }
 
@@ -126,7 +131,8 @@ func TestWriteArtifactsIncludesPlatformXLSX(t *testing.T) {
 		sheet = string(content)
 	}
 	if !strings.Contains(sheet, `<c r="A4" s="4"><v>101</v></c>`) ||
-		!strings.Contains(sheet, `<t>light_01_switch</t>`) {
+		!strings.Contains(sheet, `<t>light_01_switch</t>`) ||
+		!strings.Contains(sheet, `需在产品场景联动设置中启用：条件+任务`) {
 		t.Fatalf("unexpected platform XLSX sheet: %q", sheet)
 	}
 }

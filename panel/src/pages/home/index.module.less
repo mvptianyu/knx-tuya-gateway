@@ -40,8 +40,10 @@
 
 .heroTop,
 .summaryRow,
-.sceneShortcuts,
-.sceneShortcut,
+.panelMeta,
+.debugEntry,
+.sceneTools,
+.sceneTool,
 .sectionHeading,
 .tabRow,
 .deviceGrid,
@@ -154,78 +156,236 @@
   white-space: nowrap;
 }
 
-.sceneShortcuts {
+.panelMeta {
   position: relative;
   z-index: 2;
-  gap: 12rpx;
+  justify-content: space-between;
+  gap: 16rpx;
   margin-top: 14rpx;
 }
 
-.sceneShortcut {
+.versionBlock {
   flex: 1;
   min-width: 0;
-  gap: 12rpx;
-  padding: 18rpx 16rpx;
+  padding: 17rpx 18rpx;
   border: 2rpx solid rgba(255, 255, 255, 0.08);
   border-radius: 20rpx;
-  background: rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.065);
   box-sizing: border-box;
 }
 
-.sceneShortcutIcon {
-  width: 48rpx;
-  height: 48rpx;
-  display: flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  border-radius: 15rpx;
-  color: #1c392f;
-  background: #8be3b9;
-  font-size: 19rpx;
-  font-weight: 800;
-}
-
-.away .sceneShortcutIcon {
-  color: #eaf1ee;
-  background: #607b70;
-}
-
-.sceneShortcutText {
-  flex: 1;
-  min-width: 0;
-}
-
-.sceneShortcutName,
-.sceneShortcutHint {
+.versionLabel,
+.versionHint {
   display: block;
 }
 
-.sceneShortcutName {
-  overflow: hidden;
-  color: #f4f8f6;
+.versionLabel {
+  color: #eff7f3;
   font-size: 22rpx;
   font-weight: 700;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.sceneShortcutHint {
-  margin-top: 4rpx;
+.versionHint {
+  margin-top: 5rpx;
   overflow: hidden;
-  color: rgba(228, 239, 234, 0.5);
+  color: rgba(228, 239, 234, 0.52);
   font-size: 16rpx;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.sceneShortcutArrow {
+.debugEntry {
+  flex: 1.25;
+  min-width: 0;
+  gap: 12rpx;
+  padding: 14rpx 16rpx;
+  border: 2rpx solid rgba(139, 227, 185, 0.18);
+  border-radius: 20rpx;
+  background: rgba(139, 227, 185, 0.11);
+  box-sizing: border-box;
+}
+
+.debugEntryIcon {
+  width: 52rpx;
+  height: 52rpx;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16rpx;
+  color: #173a2d;
+  background: #8be3b9;
+  font-size: 15rpx;
+  font-weight: 800;
+}
+
+.debugEntryText {
+  flex: 1;
+  min-width: 0;
+}
+
+.debugEntryTitle,
+.debugEntryHint {
+  display: block;
+}
+
+.debugEntryTitle {
+  color: #f4f8f6;
+  font-size: 21rpx;
+  font-weight: 700;
+}
+
+.debugEntryHint {
+  margin-top: 4rpx;
+  color: rgba(228, 239, 234, 0.5);
+  font-size: 16rpx;
+}
+
+.debugEntryArrow {
   color: rgba(235, 243, 239, 0.42);
   font-size: 30rpx;
 }
 
-.sceneShortcutDisabled {
-  opacity: 0.48;
+.sceneTools {
+  gap: 12rpx;
+  margin: 22rpx 24rpx 4rpx;
+}
+
+.sceneTool {
+  flex: 1;
+  min-width: 0;
+  gap: 14rpx;
+  padding: 20rpx 18rpx;
+  border: 2rpx solid #e2e6e8;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.9);
+  box-sizing: border-box;
+  box-shadow: 0 10rpx 24rpx rgba(44, 61, 68, 0.06);
+}
+
+.sceneToolPrimary {
+  color: #eef8f3;
+  border-color: rgba(43, 91, 73, 0.16);
+  background: linear-gradient(145deg, #315e4d, #24483b);
+}
+
+.sceneToolIcon {
+  width: 52rpx;
+  height: 52rpx;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 17rpx;
+  color: #24483b;
+  background: #92e1bd;
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.sceneToolIconManage {
+  color: #4d5961;
+  background: #e5eaed;
+  font-size: 18rpx;
+}
+
+.sceneToolText {
+  flex: 1;
+  min-width: 0;
+}
+
+.sceneToolTitle,
+.sceneToolHint {
+  display: block;
+}
+
+.sceneToolTitle {
+  overflow: hidden;
+  font-size: 23rpx;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sceneToolHint {
+  margin-top: 5rpx;
+  overflow: hidden;
+  color: #929aa0;
+  font-size: 16rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sceneToolPrimary .sceneToolHint {
+  color: rgba(234, 246, 240, 0.58);
+}
+
+.sceneDiagnostics {
+  margin: 14rpx 24rpx 4rpx;
+  padding: 20rpx;
+  border: 2rpx solid #dfe5e3;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 10rpx 24rpx rgba(44, 61, 68, 0.05);
+}
+
+.sceneDiagnosticsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.sceneDiagnosticsTitle {
+  color: #26342f;
+  font-size: 23rpx;
+  font-weight: 700;
+}
+
+.sceneDiagnosticsBadge {
+  flex: none;
+  padding: 6rpx 12rpx;
+  border-radius: 14rpx;
+  font-size: 16rpx;
+  font-weight: 700;
+}
+
+.sceneDiagnosticsOk {
+  color: #236347;
+  background: #dff3e9;
+}
+
+.sceneDiagnosticsWarn {
+  color: #8a4b1d;
+  background: #faead9;
+}
+
+.sceneDiagnosticsLine,
+.sceneDiagnosticsHint,
+.sceneDiagnosticsError {
+  display: block;
+}
+
+.sceneDiagnosticsLine {
+  margin-top: 10rpx;
+  color: #66716d;
+  font-size: 17rpx;
+  line-height: 1.45;
+}
+
+.sceneDiagnosticsHint {
+  margin-top: 13rpx;
+  padding-top: 13rpx;
+  border-top: 2rpx solid #edf0ef;
+  color: #34443e;
+  font-size: 18rpx;
+  line-height: 1.55;
+}
+
+.sceneDiagnosticsError {
+  margin-top: 8rpx;
+  color: #a64f42;
+  font-size: 16rpx;
 }
 
 .heroGlow,
@@ -432,14 +592,15 @@
     padding: 16rpx 12rpx;
   }
 
-  .sceneShortcuts {
+  .panelMeta {
     gap: 10rpx;
     margin-top: 12rpx;
   }
 
-  .sceneShortcut {
-    gap: 9rpx;
-    padding: 17rpx 12rpx;
+  .versionBlock,
+  .debugEntry {
+    padding-right: 12rpx;
+    padding-left: 12rpx;
   }
 
   .tabRow,
@@ -456,6 +617,21 @@
   .deviceGrid {
     padding-right: 16rpx;
     padding-left: 16rpx;
+  }
+
+  .sceneTools {
+    margin-right: 16rpx;
+    margin-left: 16rpx;
+  }
+
+  .sceneDiagnostics {
+    margin-right: 16rpx;
+    margin-left: 16rpx;
+  }
+
+  .sceneTool {
+    gap: 10rpx;
+    padding: 18rpx 13rpx;
   }
 
   .categorySection {
