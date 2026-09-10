@@ -8,6 +8,23 @@ export type CategoryId =
 
 export type DpValue = boolean | number | string;
 
+export interface DpSchema {
+  code: string;
+  id: number;
+  mode: string;
+  name: string;
+  property: {
+    type: string;
+    range?: readonly string[];
+    min?: number;
+    max?: number;
+    step?: number;
+    scale?: number;
+    unit?: string;
+  };
+  type: string;
+}
+
 export interface PanelDevice {
   id: string;
   name: string;

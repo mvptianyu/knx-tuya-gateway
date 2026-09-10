@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, Text, View, device, request, showToast } from '@ray-js/ray';
+import { ScrollView, Text, View, device, showToast } from '@ray-js/ray';
 import { hooks, useActions, useProps } from '@ray-js/panel-sdk';
 import { devices as sdmDevices } from '@/devices';
 import { panelDevices } from '@/generated/manifest';
@@ -9,12 +9,13 @@ import { mockDevices, mockDpState } from '@/mock/devices';
 import {
   AirConditionerCard,
   ClimateCard,
+  formatEnumLabel,
   FreshAirCard,
   LightCard,
   SceneCard,
 } from '@/components/DeviceCards';
 import { CategoryIcon } from '@/components/CategoryIcon';
-import { CategoryId, DpActions, DpValue, PanelDevice } from '@/types';
+import { CategoryId, DpActions, DpSchema, DpValue, PanelDevice } from '@/types';
 import {
   formatTemperature,
   isMockPreview,
@@ -44,6 +45,34 @@ const localDpByCode = defaultSchema.reduce<Record<string, (typeof defaultSchema)
   {}
 );
 
+const panelSchemaByCode = localDpByCode as unknown as Record<
+  string,
+  DpSchema | undefined
+>;
+
+function indexDpSchemas(source: unknown) {
+  if (!Array.isArray(source)) return {};
+  return source.reduce<Record<string, DpSchema | undefined>>((result, item) => {
+    if (!item || typeof item !== 'object') return result;
+    const candidate = item as Record<string, unknown>;
+    if (typeof candidate.code !== 'string') return result;
+    let property = candidate.property;
+    if (typeof property === 'string') {
+      try {
+        property = JSON.parse(property);
+      } catch (_error) {
+        return result;
+      }
+    }
+    if (!property || typeof property !== 'object') return result;
+    result[candidate.code] = {
+      ...(candidate as unknown as DpSchema),
+      property: property as DpSchema['property'],
+    };
+    return result;
+  }, {});
+}
+
 const localDpCodeById = defaultSchema.reduce<Record<string, string>>(
   (result, item) => {
     result[String(item.id)] = item.code;
@@ -69,18 +98,34 @@ type ThingModelInfo = {
   extensions: Record<string, unknown>;
 };
 
+type RuntimeMapping = {
+  virtual_device_id?: string;
+  name: string;
+  category?: PanelDevice['category'];
+  room?: string;
+  slot?: number;
+  capability?: string;
+  tuya_dp_code: string;
+  tuya_dp_type?: string;
+  tuya_to_knx?: Record<string, unknown>;
+  knx_to_tuya?: Record<string, unknown>;
+  min?: number;
+  max?: number;
+  step?: number;
+  scale?: number;
+  unit?: string;
+};
+
 type RuntimeBundle = {
   schema_version: number;
   version: string;
-  mappings: Array<{
-    virtual_device_id?: string;
-    name: string;
-    category?: PanelDevice['category'];
-    room?: string;
-    slot?: number;
-    capability?: string;
-    tuya_dp_code: string;
-  }>;
+  mappings: RuntimeMapping[];
+};
+
+type RuntimeResponse = {
+  data?: unknown;
+  statusCode?: number;
+  header?: Record<string, unknown>;
 };
 
 const thingModelReady = new Map<string, Promise<ThingModelInfo>>();
@@ -184,6 +229,160 @@ function publishThingModelProperty(
   });
 }
 
+function decodeUtf8(bytes: Uint8Array) {
+  let result = '';
+  for (let index = 0; index < bytes.length; ) {
+    const first = bytes[index++];
+    if (first < 0x80) {
+      result += String.fromCharCode(first);
+      continue;
+    }
+
+    const second = bytes[index++] & 0x3f;
+    if (first < 0xe0) {
+      result += String.fromCharCode(((first & 0x1f) << 6) | second);
+      continue;
+    }
+
+    const third = bytes[index++] & 0x3f;
+    if (first < 0xf0) {
+      result += String.fromCharCode(
+        ((first & 0x0f) << 12) | (second << 6) | third
+      );
+      continue;
+    }
+
+    const fourth = bytes[index++] & 0x3f;
+    const codePoint =
+      ((first & 0x07) << 18) | (second << 12) | (third << 6) | fourth;
+    const offset = codePoint - 0x10000;
+    result += String.fromCharCode(
+      0xd800 + (offset >> 10),
+      0xdc00 + (offset & 0x3ff)
+    );
+  }
+  return result;
+}
+
+function decodeRuntimeBinary(payload: unknown): string | undefined {
+  if (typeof ArrayBuffer === 'undefined') return undefined;
+  if (payload instanceof ArrayBuffer) {
+    return decodeUtf8(new Uint8Array(payload));
+  }
+  if (ArrayBuffer.isView(payload)) {
+    return decodeUtf8(
+      new Uint8Array(payload.buffer, payload.byteOffset, payload.byteLength)
+    );
+  }
+  if (payload && typeof payload === 'object') {
+    const entries = Object.entries(payload as Record<string, unknown>);
+    if (
+      entries.length > 0 &&
+      entries.every(
+        ([key, value]) => /^\d+$/.test(key) && typeof value === 'number'
+      )
+    ) {
+      const bytes = entries
+        .sort(([left], [right]) => Number(left) - Number(right))
+        .map(([, value]) => value as number);
+      return decodeUtf8(new Uint8Array(bytes));
+    }
+  }
+  return undefined;
+}
+
+function parseRuntimeBundle(payload: unknown, depth = 0): RuntimeBundle {
+  if (depth > 4) {
+    throw new Error('运行时配置包装层级过深');
+  }
+
+  const binaryText = decodeRuntimeBinary(payload);
+  if (binaryText !== undefined) {
+    return parseRuntimeBundle(binaryText, depth + 1);
+  }
+
+  if (typeof payload === 'string') {
+    const text = payload.replace(/^\uFEFF/, '').trim();
+    if (!text) throw new Error('运行时配置响应为空');
+    return parseRuntimeBundle(JSON.parse(text), depth + 1);
+  }
+
+  if (!payload || typeof payload !== 'object') {
+    throw new Error(`运行时配置响应类型不支持：${typeof payload}`);
+  }
+
+  const candidate = payload as Record<string, unknown>;
+  if ('schema_version' in candidate || 'mappings' in candidate) {
+    const schemaVersion = Number(candidate.schema_version);
+    const version =
+      typeof candidate.version === 'string' ? candidate.version.trim() : '';
+    if (
+      schemaVersion !== 1 ||
+      !version ||
+      !Array.isArray(candidate.mappings)
+    ) {
+      throw new Error(
+        `运行时配置格式不受支持：schema_version=${String(
+          candidate.schema_version
+        )}, version=${String(candidate.version)}, mappings=${Array.isArray(
+          candidate.mappings
+        )}`
+      );
+    }
+    return {
+      ...(candidate as RuntimeBundle),
+      schema_version: schemaVersion,
+      version,
+    };
+  }
+
+  const wrapperKeys = ['data', 'body', 'payload', 'result'];
+  for (const key of wrapperKeys) {
+    if (key in candidate && candidate[key] !== payload) {
+      try {
+        return parseRuntimeBundle(candidate[key], depth + 1);
+      } catch (_error) {
+        // Some Tuya request implementations add unrelated wrapper fields.
+      }
+    }
+  }
+  throw new Error(
+    `运行时配置对象缺少 schema_version/mappings，字段=${Object.keys(candidate)
+      .slice(0, 12)
+      .join(',')}`
+  );
+}
+
+function describeRuntimeResponse(response: RuntimeResponse) {
+  const payload = response.data;
+  const binaryText = decodeRuntimeBinary(payload);
+  let preview = '';
+  if (typeof payload === 'string') {
+    preview = payload.slice(0, 240);
+  } else if (binaryText !== undefined) {
+    preview = binaryText.slice(0, 240);
+  } else if (payload && typeof payload === 'object') {
+    try {
+      preview = JSON.stringify(payload).slice(0, 240);
+    } catch (_error) {
+      preview = '[unserializable object]';
+    }
+  } else {
+    preview = String(payload);
+  }
+  return {
+    statusCode: response.statusCode,
+    payloadType:
+      binaryText !== undefined
+        ? 'binary'
+        : Array.isArray(payload)
+          ? 'array'
+          : typeof payload,
+    headers: response.header,
+    preview,
+  };
+}
+
 function buildRuntimeDevices(bundle: RuntimeBundle): PanelDevice[] {
   if (bundle.schema_version !== 1 || !bundle.version || !Array.isArray(bundle.mappings)) {
     throw new Error('运行时配置格式不受支持');
@@ -228,28 +427,126 @@ function buildRuntimeDevices(bundle: RuntimeBundle): PanelDevice[] {
   );
 }
 
+function buildRuntimeSchemas(
+  bundle: RuntimeBundle
+): Record<string, DpSchema | undefined> {
+  const schemas: Record<string, DpSchema | undefined> = {};
+  bundle.mappings.forEach(item => {
+    const base = panelSchemaByCode[item.tuya_dp_code];
+    if (!base) return;
+
+    const property: DpSchema['property'] = { ...base.property };
+    let overridden = false;
+    if (
+      item.tuya_dp_type === 'enum' &&
+      item.tuya_to_knx &&
+      Object.keys(item.tuya_to_knx).length > 0
+    ) {
+      property.type = 'enum';
+      property.range = Object.keys(item.tuya_to_knx);
+      overridden = true;
+    }
+
+    if (typeof item.min === 'number') {
+      property.min = item.min;
+      overridden = true;
+    }
+    if (typeof item.max === 'number') {
+      property.max = item.max;
+      overridden = true;
+    }
+    if (typeof item.step === 'number') {
+      property.step = item.step;
+      overridden = true;
+    }
+    if (typeof item.scale === 'number') {
+      property.scale = item.scale;
+      overridden = true;
+    }
+    if (typeof item.unit === 'string') {
+      property.unit = item.unit;
+      overridden = true;
+    }
+
+    if (overridden) {
+      schemas[item.tuya_dp_code] = {
+        ...base,
+        property,
+      };
+    }
+  });
+  return schemas;
+}
+
 function fetchRuntimeDevices(url: string) {
-  return new Promise<{ version: string; devices: PanelDevice[] }>((resolve, reject) => {
+  return new Promise<{
+    version: string;
+    devices: PanelDevice[];
+    schemas: Record<string, DpSchema | undefined>;
+  }>((resolve, reject) => {
     const separator = url.includes('?') ? '&' : '?';
-    request({
-      url: `${url}${separator}_ts=${Date.now()}`,
+    const requestURL = `${url}${separator}_ts=${Date.now()}`;
+    const rejectRequest = (error: unknown) => {
+      console.warn('Panel runtime request failed', {
+        url: requestURL,
+        error: getErrorMessage(error),
+      });
+      reject(error);
+    };
+
+    console.info('Panel runtime request started', {
+      url: requestURL,
       method: 'GET',
-      timeout: 10000,
-      responseType: 'text',
-      success: response => {
-        try {
-          const payload = (response as { data?: unknown }).data;
-          const bundle =
-            typeof payload === 'string'
-              ? (JSON.parse(payload) as RuntimeBundle)
-              : (payload as RuntimeBundle);
-          resolve({ version: bundle.version, devices: buildRuntimeDevices(bundle) });
-        } catch (error) {
-          reject(error);
-        }
-      },
-      fail: reject,
     });
+
+    try {
+      const task = ty.request({
+        url: requestURL,
+        data: '',
+        header: {
+          Accept: 'application/json, text/plain, */*',
+        },
+        method: 'GET',
+        dataType: 'text',
+        responseType: 'text',
+        timeout: 10000,
+        success: response => {
+          try {
+            const runtimeResponse = response as RuntimeResponse;
+            let bundle: RuntimeBundle;
+            try {
+              bundle = parseRuntimeBundle(runtimeResponse.data);
+            } catch (_dataError) {
+              bundle = parseRuntimeBundle(runtimeResponse);
+            }
+            resolve({
+              version: bundle.version,
+              devices: buildRuntimeDevices(bundle),
+              schemas: buildRuntimeSchemas(bundle),
+            });
+          } catch (error) {
+            console.warn(
+              'Panel runtime response parse failed',
+              describeRuntimeResponse(response as RuntimeResponse),
+              error
+            );
+            reject(error);
+          }
+        },
+        fail: rejectRequest,
+      });
+
+      // Some Smart Life/base-library combinations expose callback APIs as thenables.
+      // Observe their rejection as well so Ark errors never escape as unhandled promises.
+      const thenableTask = task as unknown as {
+        catch?: (handler: (error: unknown) => void) => unknown;
+      };
+      if (typeof thenableTask?.catch === 'function') {
+        thenableTask.catch(rejectRequest);
+      }
+    } catch (error) {
+      rejectRequest(error);
+    }
   });
 }
 
@@ -342,8 +639,21 @@ export function Home() {
   const [runtimeDevices, setRuntimeDevices] = React.useState<PanelDevice[] | null>(
     null
   );
+  const [cloudSchemaByCode, setCloudSchemaByCode] = React.useState<
+    Record<string, DpSchema | undefined>
+  >({});
+  const [runtimeSchemaByCode, setRuntimeSchemaByCode] = React.useState<
+    Record<string, DpSchema | undefined>
+  >({});
 
   const devices = mock ? mockDevices : runtimeDevices || panelDevices;
+  const schemaByCode = mock
+    ? panelSchemaByCode
+    : {
+        ...panelSchemaByCode,
+        ...cloudSchemaByCode,
+        ...runtimeSchemaByCode,
+      };
   // TuyaLink updates must win over the traditional schema snapshot, which can be stale.
   const state = mock ? previewState : { ...liveState, ...tuyaLinkState };
   const visibleCategories = categoryMeta.filter(
@@ -411,6 +721,7 @@ export function Home() {
       dps?: Record<string, unknown>;
     };
     applyDpIds(devInfo?.dps);
+    setCloudSchemaByCode(indexDpSchemas(devInfo?.schema));
     console.info('Panel device diagnostics', {
       deviceId: devInfo?.devId,
       productId: devInfo?.productId,
@@ -439,9 +750,11 @@ export function Home() {
         .then(result => {
           if (!active) return;
           setRuntimeDevices(result.devices);
+          setRuntimeSchemaByCode(result.schemas);
           console.info('Panel runtime bundle loaded', {
             version: result.version,
             deviceCount: result.devices.length,
+            runtimeSchemaCount: Object.keys(result.schemas).length,
           });
         })
         .catch(error => {
@@ -516,6 +829,7 @@ export function Home() {
       device,
       state,
       setDp,
+      schemaByCode,
     };
     switch (device.category) {
       case 'light':
@@ -547,7 +861,7 @@ export function Home() {
           showToast({ title: `请先配置${label}场景映射` });
           return;
         }
-        setDp(scene.dps.trigger, true);
+        void setDp(scene.dps.trigger, true);
       }}
     >
       <View className={styles.sceneShortcutIcon}>
@@ -627,13 +941,15 @@ export function Home() {
                 </Text>
                 <Text className={styles.summaryLabel}>
                   {freshAirEnabled
-                    ? `${freshAirMode === 'manual' ? '手动' : '自动'} · ${
-                        freshAirFan === 'low'
-                          ? '低风'
-                          : freshAirFan === 'high'
-                            ? '高风'
-                            : '中风'
-                      }`
+                    ? [freshAirMode, freshAirFan]
+                        .filter(Boolean)
+                        .map((value, index) =>
+                          formatEnumLabel(
+                            value as string,
+                            index === 0 ? 'mode' : 'fan_speed'
+                          )
+                        )
+                        .join(' · ') || '运行中'
                     : '新风状态'}
                 </Text>
               </View>
